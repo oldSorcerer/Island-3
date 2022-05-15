@@ -39,15 +39,15 @@ public class Main {
                 for (int j = 0; j < 5; j++) {
                     System.out.println("["+(i+1)+", " +(j+1)+"] - "+ cells[i][j]);
                 }
-                System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------");
+                System.out.println(LifeStep.lifeStep +"--------------------------------------------------------------------------------------------------------------------------------");
             }
 
         }
 
         Edem.shutdown();
         Life.shutdown();
-        System.out.println(Duck.newDuck);
-        System.out.println(Duck.deathDuck);
+        System.out.println("Caterpillars:"+Caterpillar.newGaterpillar+"/"+Caterpillar.deathGaterpillar+
+                            "    Duck:" + Duck.newDuck+"/"+Duck.deathDuck);
 
 
 

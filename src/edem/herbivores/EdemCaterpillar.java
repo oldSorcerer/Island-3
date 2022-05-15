@@ -16,7 +16,7 @@ public class EdemCaterpillar implements Runnable{
     public void run() {
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
-                for (int k = 0; k < 10; k++) {
+                for (int k = 0; k < 0; k++) {
                     cells[i][j].getCaterpillar().add(new Caterpillar());
                     Caterpillar.newGaterpillar++;
                 }

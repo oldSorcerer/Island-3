@@ -43,6 +43,16 @@ public class Duck extends Herbivores {
         weight = 1;
         stepDeath = 0;
         name = Integer.toString(newDuck);
+        satiety = 0.15;
+    }
+
+    @Override
+    public String toString() {
+        return "Duck{" +
+                "name='" + name + '\'' +
+                ", satiety=" + satiety +
+                ", stepDeath=" + stepDeath +
+                '}';
     }
 
     public static void life(Cell[][] cells, int i, int j){
@@ -96,14 +106,16 @@ public class Duck extends Herbivores {
                 if(finishPlants == false){
                     for (int k = 0; k < duck.size(); k++) {
                         duck.get(k).satiety = 0.15;
+                        duck.get(k).stepDeath=0;
                     }
                 }else{
                     for (int k = 0; k < x*15; k++) {
                         duck.get(k).satiety = 0.15;
+                        duck.get(k).stepDeath=0;
                     }
                 }
             }else if(eatCaterpillar){
-                int countEatingCaterpillar =0;
+
                 eatFood = caterpillar.size()/15;
                 int x=0;
                 boolean finishEats = false;
@@ -122,10 +134,12 @@ public class Duck extends Herbivores {
                 if(finishEats == false){
                     for (int k = 0; k < duck.size(); k++) {
                         duck.get(k).satiety = 0.15;
+                        duck.get(k).stepDeath=0;
                     }
                 }else{
                     for (int k = 0; k < x/15; k++) {
                         duck.get(k).satiety = 0.15;
+                        duck.get(k).stepDeath=0;
                     }
                 }
             }
@@ -134,7 +148,7 @@ public class Duck extends Herbivores {
         }else if(LifeStep.lifeStep%2==1){
             //каждая самка откладывает по 5 яйц, предположим что половина текущей популяции самки
             int newDuck = (duck.size()/2)*5;
-            for (int k = 0; k < newDuck; k++) {
+            for (int k = 0; k < 0; k++) {
                 if(Cell.MAX_DUCK>duck.size()){
                     duck.add(new Duck());
                     Duck.newDuck++;
@@ -148,15 +162,25 @@ public class Duck extends Herbivores {
             step++;
             Iterator<Duck> iterator = duck.iterator();
             Duck duck1 = null;
+
             while (iterator.hasNext()){
+
                 duck1 = iterator.next();
-                if(duck1.satiety==0){
+                System.out.println(duck1);
+                if(duck1.satiety<0.12){
+                    System.out.println("move " + duck1);
                     duck.remove(duck1);
-                    try{
+                    if(j+step>cells[0].length-1){
+                        cells[i][cells[0].length-1].getDuck().add(duck1);
+                    }else{
                         cells[i][j+step].getDuck().add(duck1);
-                    }catch (Exception e){
-                        Duck.deathDuck++;
                     }
+//                    try{
+//
+//                    }catch (Exception e){
+//
+//                        Duck.deathDuck++;
+//                    }
                 }
             }
         }
@@ -167,9 +191,11 @@ public class Duck extends Herbivores {
                 iterator.remove();
                 Duck.deathDuck++;
             }
-            if(duck1.satiety<=0) duck1.stepDeath++;
+            if(duck1.satiety<0.12) duck1.stepDeath++;
             //если утка поела отчет смерти начинается заного
-            if(duck1.satiety>0) duck1.stepDeath=0;
+            duck1.satiety -=0.03;
+
+
         }
     }
     @Override
