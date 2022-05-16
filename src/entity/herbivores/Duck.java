@@ -43,7 +43,7 @@ public class Duck extends Herbivores {
         weight = 1;
         stepDeath = 0;
         name = Integer.toString(newDuck);
-        satiety = 0.15;
+        satiety = 0;
     }
 
     @Override
@@ -106,12 +106,12 @@ public class Duck extends Herbivores {
                 if(finishPlants == false){
                     for (int k = 0; k < duck.size(); k++) {
                         duck.get(k).satiety = 0.15;
-                        duck.get(k).stepDeath=0;
+
                     }
                 }else{
                     for (int k = 0; k < x*15; k++) {
                         duck.get(k).satiety = 0.15;
-                        duck.get(k).stepDeath=0;
+
                     }
                 }
             }else if(eatCaterpillar){
@@ -134,12 +134,12 @@ public class Duck extends Herbivores {
                 if(finishEats == false){
                     for (int k = 0; k < duck.size(); k++) {
                         duck.get(k).satiety = 0.15;
-                        duck.get(k).stepDeath=0;
+
                     }
                 }else{
                     for (int k = 0; k < x/15; k++) {
                         duck.get(k).satiety = 0.15;
-                        duck.get(k).stepDeath=0;
+
                     }
                 }
             }
@@ -156,47 +156,40 @@ public class Duck extends Herbivores {
                 duck.get(k).stepDeath++;
             }
         //--------------------------------------------------------------------------------------------------------------
-        //передвижение произходит по строке, если дошел до конца поля то утка умирает, утка может делать 4 шага
+        //передвижение произходит по строке, все движутся к концустроки
         }else {
-            int step = ThreadLocalRandom.current().nextInt(4);
+            int step = ThreadLocalRandom.current().nextInt(2);
             step++;
             Iterator<Duck> iterator = duck.iterator();
             Duck duck1 = null;
-
             while (iterator.hasNext()){
-
                 duck1 = iterator.next();
                 System.out.println(duck1);
                 if(duck1.satiety<0.12){
                     System.out.println("move " + duck1);
-                    duck.remove(duck1);
+                    iterator.remove();
                     if(j+step>cells[0].length-1){
                         cells[i][cells[0].length-1].getDuck().add(duck1);
                     }else{
                         cells[i][j+step].getDuck().add(duck1);
                     }
-//                    try{
-//
-//                    }catch (Exception e){
-//
-//                        Duck.deathDuck++;
-//                    }
                 }
             }
+
         }
-        Iterator<Duck> iterator = duck.iterator();
-        while (iterator.hasNext()){
-            Duck duck1 = iterator.next();
-            if(duck1.stepDeath==4){
-                iterator.remove();
+        Iterator<Duck> iterator1 = duck.iterator();
+        while (iterator1.hasNext()){
+            Duck duck2 = iterator1.next();
+            if(duck2.stepDeath==4){
+                iterator1.remove();
                 Duck.deathDuck++;
             }
-            if(duck1.satiety<0.12) duck1.stepDeath++;
-            //если утка поела отчет смерти начинается заного
-            duck1.satiety -=0.03;
+            if(Math.abs(duck2.satiety-0.15)<= 0.01) duck2.stepDeath++;
+            duck2.satiety -=0.03;
 
 
         }
+
     }
     @Override
     public void eat() {

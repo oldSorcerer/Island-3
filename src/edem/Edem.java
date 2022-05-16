@@ -21,7 +21,7 @@ public class Edem {
             //гусеницы
         executorService.execute(new EdemCaterpillar(cells));
             //Утки
-        executorService.execute(new EdemDuck(cells));
+        //executorService.execute(new EdemDuck(cells));
             //Коровы
         executorService.execute(new EdemCow(cells));
             //Олени

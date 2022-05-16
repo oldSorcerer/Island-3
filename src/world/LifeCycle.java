@@ -23,7 +23,12 @@ public class LifeCycle implements Runnable{
             for (int j = 0; j < cells[0].length; j++) {
                 //сперва начинают ходить гусеницы
                 //Caterpillar.life(cells,i,j);
-                Duck.life(cells,i,j);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+               // Duck.life(cells,i,j);
             }
         }
     }

@@ -2,8 +2,8 @@ package entity;
 
 public abstract class Animal {
     protected double weight;
-    protected double satiety;
-    protected int stepDeath;
+    public double satiety;
+    public int stepDeath;
 
     public double getWeight() {
         return weight;
