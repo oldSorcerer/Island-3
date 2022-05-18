@@ -24,13 +24,9 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         //begin initial block-------------------------------------------------------------------------------------------
-        Cell[][] cells = new Cell[3][3];
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                cells[i][j] = new Cell();
-            }
-        }
+        Cell[][] cells = new Cell[10][10];
+        //заполняем матрицу ячейками
+        initCells(cells);
         Edem.runEdem(cells);
         //end initial block---------------------------------------------------------------------------------------------
         //begin world life----------------------------------------------------------------------------------------------
@@ -215,5 +211,13 @@ public class Main {
 
 
 
+    }
+
+    private static void initCells(Cell[][] cells){
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                cells[i][j] = new Cell();
+            }
+        }
     }
 }
