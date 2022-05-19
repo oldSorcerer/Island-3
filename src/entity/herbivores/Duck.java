@@ -24,6 +24,8 @@ public class Duck extends Herbivores {
         this.name = name;
     }
 
+
+
     private String name = new String();
 
     @Override
