@@ -42,7 +42,7 @@ public class Duck extends Herbivores {
     }
 
     public Duck() {
-        weight = 1;
+        weight = 1000;
         stepDeath = 0;
         name = Integer.toString(newDuck);
         satiety = 0;

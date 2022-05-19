@@ -6,7 +6,7 @@ public class Goat extends Herbivores {
     public static int newGoat = 0;
     public static int deathGoat= 0;
     public Goat() {
-        weight = 65;
+        weight = 60_000;
         stepDeath = 0;
 
     }

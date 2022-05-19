@@ -1,4 +1,7 @@
 package entity.verb;
+
+import entity.Cell;
+
 public interface Move {
-    void move();
+    void move(Cell[][] cells);
 }

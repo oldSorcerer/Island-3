@@ -6,7 +6,7 @@ public class Buffalo extends Herbivores {
     public static int newCow = 0;
     public static int deathCow = 0;
     public Buffalo() {
-        weight = 300;
+        weight = 700_000;
         stepDeath = 0;
     }
 

@@ -17,17 +17,49 @@ public class Caterpillar extends Herbivores {
 
     public static int newGaterpillar = 0;
     public static int deathGaterpillar = 0;
+    private boolean isEat = false;
+    private boolean isMove = false;
+    private boolean isReproduce = false;
+    //0 - woman
+    //1 - man
+    int intGender = ThreadLocalRandom.current().nextInt(2);
 
+    public boolean isReproduce() {
+        return isReproduce;
+    }
+
+    public void setReproduce(boolean reproduce) {
+        isReproduce = reproduce;
+    }
+
+    public boolean isMove() {
+        return isMove;
+    }
+
+    public void setMove(boolean move) {
+        isMove = move;
+    }
+
+    public boolean isEat() {
+        return isEat;
+    }
+
+    public void setEat(boolean eat) {
+        isEat = eat;
+    }
 
     public Caterpillar() {
         weight = 10;
         satiety = 3;
+        isEat = true;
+        isMove = false;
     }
     //гусеницы питаются в методее жизнь, потому что едят(400 гусениц съедают 1 растение)
     @Override
     public void eat() {
 
     }
+
     public static void life(Cell[][] cells, int i, int j) {
         ArrayList<Caterpillar> caterpillar =  cells[i][j].getCaterpillar();
         List<Plant> plant = cells[i][j].getSynchronizedPlant();
@@ -61,11 +93,11 @@ public class Caterpillar extends Herbivores {
             }
             if(finishPlants == false){
                 for (int k = 0; k < caterpillar.size(); k++) {
-                    caterpillar.get(k).satiety = 0.0025;
+                    caterpillar.get(k).satiety = 3;
                 }
             }else{
                 for (int k = 0; k < x*400; k++) {
-                    caterpillar.get(k).satiety = 0.0025;
+                    caterpillar.get(k).satiety = 3;
                 }
             }
         //--------------------------------------------------------------------------------------------------------------
@@ -97,12 +129,38 @@ public class Caterpillar extends Herbivores {
         }
     }
     @Override
-    public void move() {
+    public void move(Cell[][] cells ) {
 
     }
-
+    public void eat(Plant plant){
+        if(plant.getWeight()>3 && isEat == false && isReproduce == false){
+            plant.setWeight(plant.getWeight()-3);
+            this.satiety=3;
+            isEat = true;
+            isMove = false;
+            isReproduce = false;
+        }else {
+            isEat = false;
+        }
+    }
     @Override
-    public void reproduce() {
+    public void reproduce(Cell[][] cells, int i, int j) {
+        if(isReproduce = false && intGender == 0 && isEat == false){
+            ArrayList<Caterpillar> caterpillars = cells[i][j].getCaterpillar();
+            if(Cell.MAX_CATERPILLAR > caterpillars.size() + 5){
+                for (int k=0;i<5;k++){
+                    caterpillars.add(new Caterpillar());
+                }
+                isReproduce=true;
+                this.satiety=0;
+            }else{
+                isReproduce = false;
+            }
+
+        }
+    }
+
+    public static void killCaterpillar(){
 
     }
 

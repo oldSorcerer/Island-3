@@ -8,7 +8,7 @@ public class Horse extends Herbivores {
     public static int newHorse = 0;
     public static int deathHorse = 0;
     public Horse() {
-        weight = 300;
+        weight = 400_000;
         stepDeath = 0;
     }
 

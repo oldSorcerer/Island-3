@@ -6,7 +6,7 @@ public class Deer extends Herbivores {
     public static int newDeer= 0;
     public static int deathDeer = 0;
     public Deer() {
-        weight = 170;
+        weight = 300_000;
         stepDeath = 0;
     }
 

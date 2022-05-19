@@ -8,7 +8,7 @@ public class Wolf extends Animal {
     public static int newWolf = 0;
     public static int deathWolf = 0;
     public Wolf() {
-        weight = 50;
+        weight = 50_000;
         stepDeath = 0;
     }
 

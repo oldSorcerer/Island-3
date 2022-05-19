@@ -6,7 +6,7 @@ public class Boa extends Predator{
     public static int newSnake = 0;
     public static int deathSnake = 0;
     public Boa() {
-        weight = 2;
+        weight = 15_000;
         stepDeath = 0;
     }
 

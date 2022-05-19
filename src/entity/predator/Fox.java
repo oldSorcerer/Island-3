@@ -6,7 +6,7 @@ public class Fox extends Predator{
     public static int newFox = 0;
     public static int deathFox = 0;
     public Fox() {
-        weight = 4;
+        weight = 8_000;
         stepDeath = 0;
     }
 

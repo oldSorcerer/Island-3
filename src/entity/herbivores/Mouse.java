@@ -6,7 +6,7 @@ public class Mouse extends Herbivores {
     public static int newMouse = 0;
     public static int deathMouse= 0;
     public Mouse() {
-        weight = 0.03;
+        weight = 50;
         stepDeath = 0;
     }
 

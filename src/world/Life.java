@@ -2,12 +2,14 @@ package world;
 
 import entity.Animal;
 import entity.Cell;
+import entity.Plant;
 import entity.herbivores.Caterpillar;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class Life {
@@ -18,6 +20,9 @@ public class Life {
                 ArrayList<Caterpillar> caterpillars = cells[i][j].getCaterpillar();
                 for (int k = 0; k < caterpillars.size(); k++) {
                     Caterpillar caterpillar = caterpillars.get(k);
+                    Plant plant = cells[i][j].getSynchronizedPlant().get(ThreadLocalRandom.current().nextInt(cells[i][j].getSynchronizedPlant().size()));
+                    caterpillar.eat(plant);
+                    caterpillar.reproduce(cells,i,j);
                 }
             }
         }
