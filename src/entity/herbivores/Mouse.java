@@ -1,11 +1,11 @@
 package entity.herbivores;
 
-public class Hamster extends Herbivores {
+public class Mouse extends Herbivores {
     public static final double MAX_EAT_UP = 0.0075;
     public static final int MAX_DEATH = 3;
-    public static int newHamster = 0;
-    public static int deathHamster= 0;
-    public Hamster() {
+    public static int newMouse = 0;
+    public static int deathMouse= 0;
+    public Mouse() {
         weight = 0.03;
         stepDeath = 0;
     }

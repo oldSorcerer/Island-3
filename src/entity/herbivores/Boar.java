@@ -1,11 +1,11 @@
 package entity.herbivores;
 
-public class Kangaroo extends Herbivores {
+public class Boar extends Herbivores {
     public static final double MAX_EAT_UP = 7;
     public static final int MAX_DEATH = 8;
-    public static int newKangaroo = 0;
-    public static int deathKangaroo = 0;
-    public Kangaroo() {
+    public static int newBoar = 0;
+    public static int deathBoar = 0;
+    public Boar() {
         weight = 47;
         stepDeath = 0;
     }

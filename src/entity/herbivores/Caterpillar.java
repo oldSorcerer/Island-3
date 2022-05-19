@@ -12,18 +12,18 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Caterpillar extends Herbivores {
-    public static final double MAX_EAT_UP = 0.0025;
-    public static final int MAX_DEATH = 1;
+    // гусеница может скущать за раз 0.0025 кг = (округлил) 3 грамм
+    public static final int MAX_EAT_UP = 3;
+
     public static int newGaterpillar = 0;
     public static int deathGaterpillar = 0;
 
 
     public Caterpillar() {
-        weight = 0.01;
-        stepDeath = 0;
-        satiety = 0.0025;
+        weight = 10;
+        satiety = 3;
     }
-    //гусеницы питаются в медоже жизнь, потому что едят(400 гусениц съедают 1 растение)
+    //гусеницы питаются в методее жизнь, потому что едят(400 гусениц съедают 1 растение)
     @Override
     public void eat() {
 

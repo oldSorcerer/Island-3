@@ -1,6 +1,8 @@
 package entity.predator;
 
-public class Wolf extends Predator{
+import entity.Animal;
+
+public class Wolf extends Animal {
     public static final double MAX_EAT_UP = 8;
     public static final int MAX_DEATH = 10;
     public static int newWolf = 0;

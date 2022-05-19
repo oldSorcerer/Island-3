@@ -5,5 +5,5 @@ import entity.verb.Eat;
 import entity.verb.Move;
 import entity.verb.Reproduce;
 
-public abstract class Herbivores extends Animal implements Eat, Reproduce, Move {
+public abstract class Herbivores extends Animal{
 }

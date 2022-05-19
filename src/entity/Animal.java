@@ -1,15 +1,20 @@
 package entity;
 
-public abstract class Animal {
-    protected double weight;
-    public double satiety;
+import entity.verb.Eat;
+import entity.verb.Move;
+import entity.verb.Reproduce;
+
+public abstract class Animal implements Eat, Move, Reproduce {
+    //перевел кг в граммы 1 кг = 1000 грамм
+    protected int weight;
+    public int satiety;
     public int stepDeath;
 
-    public double getWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
 
@@ -20,11 +25,11 @@ public abstract class Animal {
     public void setStepDeath(int stepDeath) {
         this.stepDeath = stepDeath;
     }
-    public double getSatiety() {
+    public int getSatiety() {
         return satiety;
     }
 
-    public void setSatiety(double satiety) {
+    public void setSatiety(int satiety) {
         this.satiety = satiety;
     }
 }

@@ -1,22 +1,27 @@
 package world;
 
+import entity.Animal;
 import entity.Cell;
+import entity.herbivores.Caterpillar;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Life {
 
-    static ScheduledExecutorService lifeCycle = Executors.newScheduledThreadPool(3);
-
     public static void runLife(Cell[][] cells){
-//        lifeCycle.scheduleAtFixedRate(new LifeStep(),0,900,TimeUnit.MILLISECONDS);
-//        lifeCycle.scheduleAtFixedRate(new LifeCycle(cells),0,1000, TimeUnit.MILLISECONDS);
-
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells[0].length; j++) {
+                ArrayList<Caterpillar> caterpillars = cells[i][j].getCaterpillar();
+                for (int k = 0; k < caterpillars.size(); k++) {
+                    Caterpillar caterpillar = caterpillars.get(k);
+                }
+            }
+        }
     }
 
-    public static void shutdown(){
-        lifeCycle.shutdown();
-    }
+
 }

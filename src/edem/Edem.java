@@ -1,51 +1,18 @@
 package edem;
 
-import edem.herbivores.*;
-import edem.predator.*;
 import entity.Cell;
+import entity.herbivores.*;
+import entity.predator.*;
 
 import java.util.concurrent.*;
 
 public class Edem {
 
     static ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(2);
-    //static ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public static void runEdem(Cell[][] cells){
-        //Травоядные----------------------------------------------------------------------------------------------------
-            // растения
         scheduledPool.scheduleAtFixedRate(new EdemPlants(cells),0,1100, TimeUnit.MILLISECONDS);
-            //гусеницы
-//        executorService.execute(new EdemCaterpillar(cells));
-//            //Утки
-//        //executorService.execute(new EdemDuck(cells));
-//            //Коровы
-//        executorService.execute(new EdemCow(cells));
-//            //Олени
-//        executorService.execute(new EdemDeer(cells));
-//            //Козы
-//        executorService.execute(new EdemGoat(cells));
-//            //Хомяки
-//        executorService.execute(new EdemHamster(cells));
-//            //Лошади
-//        executorService.execute(new EdemHorse(cells));
-//            //Кенгуру
-//        executorService.execute(new EdemKangaroo(cells));
-//            //Кролики
-//        executorService.execute(new EdemRabbit(cells));
-//            //Овцы
-//        executorService.execute(new EdemSheep(cells));
-//        //Хищники-------------------------------------------------------------------------------------------------------
-//            //Медведи
-//        executorService.execute(new EdemBear(cells));
-//            //Орлы
-//        executorService.execute(new EdemEagle(cells));
-//            //Лисы
-//        executorService.execute(new EdemFox(cells));
-//            //Змеи
-//        executorService.execute(new EdemSnake(cells));
-//            //Волки
-//        executorService.execute(new EdemWolf(cells));
+
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
                 generatorAnimal(cells[i][j],700);
@@ -54,43 +21,56 @@ public class Edem {
     }
     public static void shutdown(){
         scheduledPool.shutdown();
-        //executorService.shutdown();
     }
 
     public static void generatorAnimal(Cell cell, int score){
         for (int i = 0; i < score; i++) {
-            int numberOfAnimal = ThreadLocalRandom.current().nextInt();
-
+            int numberOfAnimal = ThreadLocalRandom.current().nextInt(15);
             if(numberOfAnimal == 0){
                 //caterpillar
+                cell.getCaterpillar().add(new Caterpillar());
             }else if(numberOfAnimal == 1){
                 //duck
+                cell.getDuck().add(new Duck());
             }else if(numberOfAnimal == 2){
-                //ox
+                //Buffalo
+                cell.getBuffalo().add(new Buffalo());
             }else if(numberOfAnimal == 3){
                 //кабан
+                cell.getBoar().add(new Boar());
             }else if(numberOfAnimal == 4){
                 //sheep
+                cell.getSheep().add(new Sheep());
             }else if(numberOfAnimal == 5){
                 //goat
+                cell.getGoat().add(new Goat());
             }else if(numberOfAnimal == 6){
                 //mouce
+                cell.getMouse().add(new Mouse());
             }else if(numberOfAnimal == 7){
                 //rabbit
+                cell.getRabbit().add(new Rabbit());
             }else if(numberOfAnimal == 8){
                 //deer
+                cell.getDeer().add(new Deer());
             }else if(numberOfAnimal == 9){
                 //horse
+                cell.getHorse().add(new Horse());
             }else if(numberOfAnimal == 10){
                 //eagle
+                cell.getEagle().add(new Eagle());
             }else if(numberOfAnimal == 11){
                 //bear
+                cell.getBear().add(new Bear());
             }else if(numberOfAnimal == 12){
                 //fox
+                cell.getFox().add(new Fox());
             }else if(numberOfAnimal == 13){
-                //snake
+                //boa
+                cell.getBoa().add(new Boa());
             }else if(numberOfAnimal == 14){
                 //wolf
+                cell.getWolf().add(new Wolf());
             }
 
         }
