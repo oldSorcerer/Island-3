@@ -41,6 +41,7 @@ public class Cell {
     private ArrayList<Boar> boar = new ArrayList<>();
     private ArrayList<Buffalo> buffalo = new ArrayList<>();
     private ArrayList<Duck> duck = new ArrayList<>();
+
     private ArrayList<Caterpillar> caterpillar = new ArrayList<>();
 
     private ArrayList<Plant> plant = new ArrayList<>();

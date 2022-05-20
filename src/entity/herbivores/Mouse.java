@@ -1,5 +1,7 @@
 package entity.herbivores;
 
+import entity.Cell;
+
 public class Mouse extends Herbivores {
     public static final double MAX_EAT_UP = 0.0075;
     public static final int MAX_DEATH = 3;
@@ -16,12 +18,12 @@ public class Mouse extends Herbivores {
     }
 
     @Override
-    public void move() {
+    public void move(Cell[][] cells) {
 
     }
 
     @Override
-    public void reproduce() {
+    public void reproduce(Cell[][] cells, int i, int j) {
 
     }
 }

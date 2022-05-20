@@ -193,18 +193,19 @@ public class Duck extends Herbivores {
 //        }
 //
 //    }
+
     @Override
     public void eat() {
 
     }
 
     @Override
-    public void move() {
+    public void move(Cell[][] cells) {
 
     }
 
     @Override
-    public void reproduce() {
+    public void reproduce(Cell[][] cells, int i, int j) {
 
     }
 }

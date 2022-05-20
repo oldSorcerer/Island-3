@@ -20,9 +20,10 @@ public class Caterpillar extends Herbivores {
     private boolean isEat = false;
     private boolean isMove = false;
     private boolean isReproduce = false;
+
     //0 - woman
     //1 - man
-    int intGender = ThreadLocalRandom.current().nextInt(2);
+    private int intGender ;
 
     public boolean isReproduce() {
         return isReproduce;
@@ -53,6 +54,10 @@ public class Caterpillar extends Herbivores {
         satiety = 3;
         isEat = true;
         isMove = false;
+        intGender = ThreadLocalRandom.current().nextInt(2);
+    }
+    public int getIntGender() {
+        return intGender;
     }
     //гусеницы питаются в методее жизнь, потому что едят(400 гусениц съедают 1 растение)
     @Override
@@ -60,108 +65,39 @@ public class Caterpillar extends Herbivores {
 
     }
 
-    public static void life(Cell[][] cells, int i, int j) {
-        ArrayList<Caterpillar> caterpillar =  cells[i][j].getCaterpillar();
-        List<Plant> plant = cells[i][j].getSynchronizedPlant();
-        //гусеницы едят-------------------------------------------------------------------------------------------------
-        // переменная для храниения гусениц которым не хватило еды (1 = 400 гусениц)
-        int hungerCaterpillar = 0;
-        //переменная lifeCyclestep отвечает за то чтобы животные ели или размножались
-        if(plant.size() != 0 && LifeStep.lifeStep % 2 == 0){
-            int eatPlants = 0;
-            // 400 гусениц съедают одно растение
-            if(caterpillar.size()<=400){
-                eatPlants =1;
-            }else{
-                eatPlants = caterpillar.size()/400;
-                // если у гусениц есть остаток, то считаю что этот остаток съедает одно растение
-                if(caterpillar.size()%400>0) eatPlants++;
-            }
-            int x=0;
-            boolean finishPlants = false;
-            for (int k = 0; k < eatPlants; k++) {
-                plant.remove(0);
-                Plant.deathPlants++;
-                x++;
-                if(plant.size()==0){
-                    finishPlants = true;
-                    break;
-                }
-            }
-            if(finishPlants){
-                hungerCaterpillar = eatPlants-x;
-            }
-            if(finishPlants == false){
-                for (int k = 0; k < caterpillar.size(); k++) {
-                    caterpillar.get(k).satiety = 3;
-                }
-            }else{
-                for (int k = 0; k < x*400; k++) {
-                    caterpillar.get(k).satiety = 3;
-                }
-            }
-        //--------------------------------------------------------------------------------------------------------------
-        //размножаемся--------------------------------------------------------------------------------------------------
-        }else if(LifeStep.lifeStep%2==1){
-            //каждая самка откладывает по 10 яйц, предположим что половина текущей популяции самки
-            int newCaterpillar = (caterpillar.size()/2)*10;
-            for (int k = 0; k < newCaterpillar; k++) {
-                if(Cell.MAX_CATERPILLAR>caterpillar.size()){
-                    caterpillar.add(new Caterpillar());
-                    Caterpillar.newGaterpillar++;
-                }
-            }
-        //--------------------------------------------------------------------------------------------------------------
-        //гусеница не переходит на другую клетку, потому что гусенице доступно только 1 день без еды-------------------------------------------------------------------------
-        //тогда 1 день гусеница раждается сытая, но все равно 400 гусенец съедают 1 растение
-        //на следующий день гусеницы размножаются и теряют один день, вконце дня они умерают
-        }
-        //проверяем кому надо добавить шаг до смерти--------------------------------------------------------------------
-        Iterator<Caterpillar> iterator = caterpillar.iterator();
-        while (iterator.hasNext()){
-            Caterpillar caterpillar1 = iterator.next();
-            if(caterpillar1.stepDeath==1){
-                iterator.remove();
-                Caterpillar.deathGaterpillar++;
-            }
-            if(caterpillar1.satiety==0) caterpillar1.stepDeath++;
-            caterpillar1.satiety = 0;
-        }
-    }
     @Override
     public void move(Cell[][] cells ) {
 
     }
     public void eat(Plant plant){
-        if(plant.getWeight()>3 && isEat == false && isReproduce == false){
+        if(plant.getWeight()>3 && this.isEat == false && this.isReproduce == false){
             plant.setWeight(plant.getWeight()-3);
             this.satiety=3;
-            isEat = true;
-            isMove = false;
-            isReproduce = false;
+            this.isEat = true;
         }else {
-            isEat = false;
+            this.isEat = false;
         }
     }
-    @Override
-    public void reproduce(Cell[][] cells, int i, int j) {
-        if(isReproduce = false && intGender == 0 && isEat == false){
+    public void reproduce(Cell[][] cells, int i, int j){
+
+    }
+    public ArrayList<Caterpillar> reproduce(Cell[][] cells, int i, int j,boolean f) {
+        ArrayList<Caterpillar> newCaterpillar = new ArrayList<>();
+        if(this.isReproduce == false && this.intGender == 0 && this.isEat == false){
             ArrayList<Caterpillar> caterpillars = cells[i][j].getCaterpillar();
-            if(Cell.MAX_CATERPILLAR > caterpillars.size() + 5){
-                for (int k=0;i<5;k++){
-                    caterpillars.add(new Caterpillar());
+            for (int k=0;k<5;k++){
+                if(Cell.MAX_CATERPILLAR>caterpillars.size()+newCaterpillar.size()){
+                    newCaterpillar.add(new Caterpillar());
+                    Caterpillar.newGaterpillar++;
                 }
-                isReproduce=true;
-                this.satiety=0;
-            }else{
-                isReproduce = false;
             }
+            this.isReproduce=true;
 
+        }else{
+            this.isReproduce = false;
         }
-    }
-
-    public static void killCaterpillar(){
-
+        this.satiety=0;
+        return newCaterpillar;
     }
 
     @Override

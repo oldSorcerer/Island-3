@@ -1,5 +1,7 @@
 package entity.predator;
 
+import entity.Cell;
+
 public class Bear extends Predator{
     public static final double MAX_EAT_UP = 38;
     public static final int MAX_DEATH = 15;
@@ -16,12 +18,12 @@ public class Bear extends Predator{
     }
 
     @Override
-    public void move() {
+    public void move(Cell[][] cells) {
 
     }
 
     @Override
-    public void reproduce() {
+    public void reproduce(Cell[][] cells, int i, int j) {
 
     }
 }

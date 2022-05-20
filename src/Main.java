@@ -31,23 +31,19 @@ public class Main {
         //begin world life----------------------------------------------------------------------------------------------
 
 
-        Life.runLife(cells);
 
-        while(LifeStep.lifeStep <8){
+        int step = 0;
+        while(step <8){
             Thread.sleep(1000);
-            for (int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    System.out.println("["+(i+1)+", " +(j+1)+"] - "+ cells[i][j]);
-                }
-                System.out.println(LifeStep.lifeStep +"--------------------------------------------------------------------------------------------------------------------------------");
-            }
-
+            Life.runLife(cells);
+            step++;
         }
 
         Edem.shutdown();
 
-        System.out.println("Caterpillars:"+Caterpillar.newGaterpillar+"/"+Caterpillar.deathGaterpillar+
-                            "    Duck:" + Duck.newDuck+"/"+Duck.deathDuck);
+//        System.out.println("Plants:" + Plant.newPlants+"/"+Plant.deathPlants+
+//                            "   Caterpillars:"+Caterpillar.newGaterpillar+"/"+Caterpillar.deathGaterpillar+
+//                            "   Duck:" + Duck.newDuck+"/"+Duck.deathDuck);
 
 
 
