@@ -33,7 +33,7 @@ public class Main {
 
 
         int step = 0;
-        while(step <8){
+        while(step <15){
             Thread.sleep(1000);
             Life.runLife(cells);
             step++;

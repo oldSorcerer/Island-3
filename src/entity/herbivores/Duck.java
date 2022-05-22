@@ -11,10 +11,56 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Duck extends Herbivores {
-    public static final double MAX_EAT_UP = 0.15;
+    public static final int MAX_EAT_UP = 150;
     public static final int MAX_DEATH = 4;
+
+    private int stepToDeath =0;
     public static int newDuck= 0;
     public static int deathDuck = 0;
+
+    private boolean isEat = false;
+    private boolean isReproduce = false;
+    private boolean isMove = false;
+    private String name = new String();
+
+    public Duck() {
+        weight = 1000;
+        stepDeath = 0;
+        name = Integer.toString(newDuck);
+        satiety = 150;
+    }
+
+    public int getStepToDeath() {
+        return stepToDeath;
+    }
+
+    public void setStepToDeath(int stepToDeath) {
+        this.stepToDeath = stepToDeath;
+    }
+
+    public boolean isEat() {
+        return isEat;
+    }
+
+    public void setEat(boolean eat) {
+        isEat = eat;
+    }
+
+    public boolean isReproduce() {
+        return isReproduce;
+    }
+
+    public void setReproduce(boolean reproduce) {
+        isReproduce = reproduce;
+    }
+
+    public boolean isMove() {
+        return isMove;
+    }
+
+    public void setMove(boolean move) {
+        isMove = move;
+    }
 
     public String getName() {
         return name;
@@ -23,10 +69,6 @@ public class Duck extends Herbivores {
     public void setName(String name) {
         this.name = name;
     }
-
-
-
-    private String name = new String();
 
     @Override
     public boolean equals(Object o) {
@@ -41,13 +83,6 @@ public class Duck extends Herbivores {
         return Objects.hash(name);
     }
 
-    public Duck() {
-        weight = 1000;
-        stepDeath = 0;
-        name = Integer.toString(newDuck);
-        satiety = 0;
-    }
-
     @Override
     public String toString() {
         return "Duck{" +
@@ -56,108 +91,177 @@ public class Duck extends Herbivores {
                 ", stepDeath=" + stepDeath +
                 '}';
     }
+    public static void life(Cell[][] cells, int i, int j){
+        ArrayList<Duck> ducks = cells[i][j].getDuck();
+        ArrayList<Duck> newDuck = new ArrayList<>();
+        ArrayList<Duck> arrayListDusckNeedToDelete = new ArrayList<>();
+        for (int k = 0; k < ducks.size(); k++) {
+            Duck duck = ducks.get(k);
+            //выбираем что кушаем
+            //0-caterpillar
+            //1-plant
+            int randomFood = ThreadLocalRandom.current().nextInt(2);
+            if(randomFood == 0){
+                ArrayList<Caterpillar> caterpillars = cells[i][j].getCaterpillar();
+                duck.eat(caterpillars);
+            }else{
+                Plant plant = cells[i][j].getSynchronizedPlant().get(ThreadLocalRandom.current().nextInt(cells[i][j].getSynchronizedPlant().size()));
+                duck.eat(plant);
+            }
+            newDuck.addAll(duck.reproduce(cells,i,j,false));
+            //move
+            Duck duckMove = duck.move(cells,i,j);
+            if(duckMove != null) arrayListDusckNeedToDelete.add(duckMove);
 
-//    public static void life(Cell[][] cells, int i, int j){
-//        ArrayList<Caterpillar> caterpillar =  cells[i][j].getCaterpillar();
-//        ArrayList<Duck> duck = cells[i][j].getDuck();
-//        List<Plant> plant = cells[i][j].getSynchronizedPlant();
-//        //утки едят-------------------------------------------------------------------------------------------------
-//        // переменная для храниения гусениц которым не хватило еды (1 растение = 7 уток)
-//        //                                                          15 гусениц = 1 утка
-//        int hungerDuck = 0;
-//        //переменная lifeCyclestep отвечает за то чтобы животные ели или размножались
-//        //рандомно выбираем что поесть
-//        //0 - растения
-//        //1 - гусеницы
-//        int choiceFood = ThreadLocalRandom.current().nextInt(2);
-//        int amountFood =0;
-//        boolean eatCaterpillar =false;
-//        boolean eatPlant =false;
-//        if(choiceFood==0){
-//            amountFood = plant.size();
-//            eatPlant = true;
-//        }
-//        else if(choiceFood == 1){
-//            amountFood = caterpillar.size();
-//            eatCaterpillar = true;
-//        }
-//        if(amountFood != 0 && LifeStep.lifeStep % 2 == 0){
-//            int eatFood = 0;
-//            if(eatPlant){
-//                if(duck.size()<=7){
-//                    eatFood =1;
-//                }else{
-//                    eatFood = duck.size()/7;
-//                    // если у уток есть остаток, то считаю что этот остаток съедает одно растение
-//                    if(caterpillar.size()%7>0) eatFood++;
-//                }
-//                int x=0;
-//                boolean finishPlants = false;
-//                for (int k = 0; k < eatFood; k++) {
-//                    plant.remove(0);
-//                    Plant.deathPlants++;
-//                    x++;
-//                    if(plant.size()==0){
-//                        finishPlants = true;
-//                        break;
-//                    }
-//                }
-//                if(finishPlants){
-//                    hungerDuck = eatFood-x;
-//                }
-//                if(finishPlants == false){
-//                    for (int k = 0; k < duck.size(); k++) {
-//                        duck.get(k).satiety = 0.15;
+        }
+        ducks.addAll(newDuck);
+        for (Duck duck: arrayListDusckNeedToDelete) {
+            ducks.remove(duck);
+        }
+        int needToKill =0;
+        Iterator<Duck> iterator = ducks.iterator();
+
+        if(ducks.size()>200){
+            needToKill = Math.abs(ducks.size()-200);
+            while (needToKill>0){
+                iterator.next();
+                iterator.remove();
+                Duck.deathDuck++;
+                needToKill--;
+            }
+        }else{
+            while (iterator.hasNext()){
+                Duck duck = iterator.next();
+                if(duck.stepDeath==4){
+                    iterator.remove();
+                    Duck.deathDuck++;
+                }
+            }
+        }
+    }
+
+    public void eat(Plant plant){
+        if(plant.getWeight()>150 && this.isEat == false && this.isReproduce == false && this.isMove == false){
+            plant.setWeight(plant.getWeight()-150);
+            this.satiety=150;
+            this.stepDeath =0;
+            this.isEat = true;
+        }else {
+            this.isEat = false;
+            this.satiety-=38;
+            if(this.satiety<0)stepDeath++;
+        }
+    }
+    public void eat(ArrayList<Caterpillar> caterpillars){
+        int chanceToEat = ThreadLocalRandom.current().nextInt(100);
+        chanceToEat++;
+
+        if(caterpillars.size()>15 && this.isEat == false && this.isReproduce == false && (chanceToEat>90) && this.isMove == false) {
+            Iterator<Caterpillar> iterator = caterpillars.iterator();
+            int needToEat = 15;
+            while (iterator.hasNext()){
+                iterator.next();
+                iterator.remove();
+                Caterpillar.deathGaterpillar++;
+                needToEat--;
+                if(needToEat ==0)break;
+            }
+            this.satiety=150;
+            this.stepDeath =0;
+            this.isEat = true;
+        }else{
+            this.isEat = false;
+            this.satiety-=38;
+            if(this.satiety<0)stepDeath++;
+        }
+    }
+
+    public ArrayList<Duck> reproduce(Cell[][] cells, int i, int j,boolean f) {
+        ArrayList<Duck> newDuck= new ArrayList<>();
+        int randomLengthCaterpillar = ThreadLocalRandom.current().nextInt(2);
+        if(this.isReproduce == false && this.isEat == false && this.isMove == false){
+            for (int k=0;k<randomLengthCaterpillar;k++){
+                newDuck.add(new Duck());
+                Duck.newDuck++;
+            }
+            this.isReproduce=true;
+        }else{
+            this.isReproduce = false;
+        }
+        this.satiety-=38;
+        if(this.satiety<0)stepDeath++;
+        return newDuck;
+    }
+
+    public Duck move(Cell[][] cells,int i,int j) {
+
+        if(this.isEat == false && this.isReproduce == false && this.isMove == false){
+            int randomStepLength = ThreadLocalRandom.current().nextInt(5);
+            int randomWay = ThreadLocalRandom.current().nextInt(4);
+            this.isMove=true;
+            if(randomWay == 0){
+                //west(left)
+                int iStepToLeft = j-randomStepLength;
+                if(iStepToLeft>0){
+                    this.satiety-=38;
+                    if(this.satiety<0)stepDeath++;
+                    ArrayList<Duck> MoveToOtherDucks = cells[i][randomStepLength].getDuck();
+                    MoveToOtherDucks.add(this);
+                    return this;
+                }else{
+                    Duck.deathDuck++;
+                    return this;
+                }
+            }else if(randomWay == 1){
+                //north(up)
+                int iStepToUp = i-randomStepLength;
+                if(iStepToUp>0){
+                    this.satiety-=38;
+                    if(this.satiety<0)stepDeath++;
+                    ArrayList<Duck> MoveToOtherDucks = cells[iStepToUp][j].getDuck();
+                    MoveToOtherDucks.add(this);
+                    return this;
+                }else{
+                    Duck.deathDuck++;
+                    return this;
+                }
+            }else if(randomWay == 2){
+                //east(right)
+                int iStepToRight = j+randomStepLength;
+                if(iStepToRight<cells[0].length){
+                    this.satiety-=38;
+                    if(this.satiety<0)stepDeath++;
+                    ArrayList<Duck> MoveToOtherDucks = cells[i][iStepToRight].getDuck();
+                    MoveToOtherDucks.add(this);
+                    return this;
+                }else{
+                    Duck.deathDuck++;
+                    return this;
+                }
+            }else if(randomWay == 3){
+                //south(down)
+                int iStepToDown = i+randomStepLength;
+                if(iStepToDown<cells.length){
+                    this.satiety-=38;
+                    if(this.satiety<0)stepDeath++;
+                    ArrayList<Duck> MoveToOtherDucks = cells[iStepToDown][j].getDuck();
+                    MoveToOtherDucks.add(this);
+                    return this;
+                }else{
+                    Duck.deathDuck++;
+                    return this;
+                }
+            }
+        }else{
+            this.isMove = false;
+        }
+        return  null;
+    }
+    @Override
+    public void move(Cell[][] cells) {
+
+    }
 //
-//                    }
-//                }else{
-//                    for (int k = 0; k < x*15; k++) {
-//                        duck.get(k).satiety = 0.15;
-//
-//                    }
-//                }
-//            }else if(eatCaterpillar){
-//
-//                eatFood = caterpillar.size()/15;
-//                int x=0;
-//                boolean finishEats = false;
-//                for (int k = 0; k < eatFood*15; k++) {
-//                    caterpillar.remove(0);
-//                    Caterpillar.deathGaterpillar++;
-//                    x++;
-//                    if(plant.size()==0){
-//                        finishEats = true;
-//                        break;
-//                    }
-//                }
-//                if(finishEats){
-//                    hungerDuck = eatFood-x;
-//                }
-//                if(finishEats == false){
-//                    for (int k = 0; k < duck.size(); k++) {
-//                        duck.get(k).satiety = 0.15;
-//
-//                    }
-//                }else{
-//                    for (int k = 0; k < x/15; k++) {
-//                        duck.get(k).satiety = 0.15;
-//
-//                    }
-//                }
-//            }
-//        //--------------------------------------------------------------------------------------------------------------
-//        //размножаемся--------------------------------------------------------------------------------------------------
-//        }else if(LifeStep.lifeStep%2==1){
-//            //каждая самка откладывает по 5 яйц, предположим что половина текущей популяции самки
-//            int newDuck = (duck.size()/2)*5;
-//            for (int k = 0; k < 0; k++) {
-//                if(Cell.MAX_DUCK>duck.size()){
-//                    duck.add(new Duck());
-//                    Duck.newDuck++;
-//                }
-//                duck.get(k).stepDeath++;
-//            }
-//        //--------------------------------------------------------------------------------------------------------------
 //        //передвижение произходит по строке, все движутся к концустроки
 //        }else {
 //            int step = ThreadLocalRandom.current().nextInt(2);
@@ -179,30 +283,14 @@ public class Duck extends Herbivores {
 //            }
 //
 //        }
-//        Iterator<Duck> iterator1 = duck.iterator();
-//        while (iterator1.hasNext()){
-//            Duck duck2 = iterator1.next();
-//            if(duck2.stepDeath==4){
-//                iterator1.remove();
-//                Duck.deathDuck++;
-//            }
-//            if(Math.abs(duck2.satiety-0.15)<= 0.01) duck2.stepDeath++;
-//            duck2.satiety -=0.03;
 //
-//
-//        }
-//
-//    }
 
     @Override
     public void eat() {
 
     }
 
-    @Override
-    public void move(Cell[][] cells) {
 
-    }
 
     @Override
     public void reproduce(Cell[][] cells, int i, int j) {
@@ -210,152 +298,3 @@ public class Duck extends Herbivores {
     }
 }
 
-//ArrayList<Caterpillar> caterpillar =  cells[i][j].getCaterpillar();
-//                    ArrayList<Duck> duck = cells[i][j].getDuck();
-//                    List<Plant> plant = cells[i][j].getSynchronizedPlant();
-//                    //утки едят-------------------------------------------------------------------------------------------------
-//                    // переменная для храниения гусениц которым не хватило еды (1 растение = 7 уток)
-//                    //                                                          15 гусениц = 1 утка
-//                    int hungerDuck = 0;
-//                    //переменная lifeCyclestep отвечает за то чтобы животные ели или размножались
-//                    //рандомно выбираем что поесть
-//                    //0 - растения
-//                    //1 - гусеницы
-//                    int choiceFood = ThreadLocalRandom.current().nextInt(2);
-//                    int amountFood =0;
-//                    boolean eatCaterpillar =false;
-//                    boolean eatPlant =false;
-//                    if(choiceFood==0){
-//                        amountFood = plant.size();
-//                        eatPlant = true;
-//                    }
-//                    else if(choiceFood == 1){
-//                        amountFood = caterpillar.size();
-//                        eatCaterpillar = true;
-//                    }
-//                    if(amountFood != 0 && step % 2 == 0){
-//                        int eatFood = 0;
-//                        if(eatPlant){
-//                            if(duck.size()<=7){
-//                                eatFood =1;
-//                            }else{
-//                                eatFood = duck.size()/7;
-//                                // если у уток есть остаток, то считаю что этот остаток съедает одно растение
-//                                if(caterpillar.size()%7>0) eatFood++;
-//                            }
-//                            int x=0;
-//                            boolean finishPlants = false;
-//                            for (int k = 0; k < eatFood; k++) {
-//                                plant.remove(0);
-//                                Plant.deathPlants++;
-//                                x++;
-//                                if(plant.size()==0){
-//                                    finishPlants = true;
-//                                    break;
-//                                }
-//                            }
-//                            if(finishPlants){
-//                                hungerDuck = eatFood-x;
-//                            }
-//                            if(finishPlants == false){
-//                                for (int k = 0; k < duck.size(); k++) {
-//                                    duck.get(k).satiety = 0.15;
-//
-//                                }
-//                            }else{
-//                                for (int k = 0; k < x*15; k++) {
-//                                    duck.get(k).satiety = 0.15;
-//
-//                                }
-//                            }
-//                        }else if(eatCaterpillar){
-//
-//                            eatFood = caterpillar.size()/15;
-//                            int x=0;
-//                            boolean finishEats = false;
-//                            for (int k = 0; k < eatFood*15; k++) {
-//                                caterpillar.remove(0);
-//                                Caterpillar.deathGaterpillar++;
-//                                x++;
-//                                if(plant.size()==0){
-//                                    finishEats = true;
-//                                    break;
-//                                }
-//                            }
-//                            if(finishEats){
-//                                hungerDuck = eatFood-x;
-//                            }
-//                            if(finishEats == false){
-//                                for (int k = 0; k < duck.size(); k++) {
-//                                    duck.get(k).satiety = 0.15;
-//
-//                                }
-//                            }else{
-//                                for (int k = 0; k < x/15; k++) {
-//                                    duck.get(k).satiety = 0.15;
-//
-//                                }
-//                            }
-//                        }
-//                        //--------------------------------------------------------------------------------------------------------------
-//                        //размножаемся--------------------------------------------------------------------------------------------------
-//                    }else if(step%2==1){
-//                        //каждая самка откладывает по 5 яйц, предположим что половина текущей популяции самки
-//                        int newDuck = (duck.size()/2)*5;
-//                        for (int k = 0; k < 0; k++) {
-//                            if(Cell.MAX_DUCK>duck.size()){
-//                                duck.add(new Duck());
-//                                Duck.newDuck++;
-//                            }
-//                            duck.get(k).stepDeath++;
-//                        }
-//                        //--------------------------------------------------------------------------------------------------------------
-//                        //передвижение произходит по строке, все движутся к концустроки
-//                    }else {
-//                        ArrayList<Duck> duckCopy = new ArrayList<>(duck);;
-//                        int step1 = ThreadLocalRandom.current().nextInt(2);
-//                        step1++;
-//                        for (int k = 0; k < duckCopy.size(); k++) {
-//                            Duck duckC = duckCopy.get(k);
-//                            if(duckC.satiety<0.12){
-//                                duck.remove(duckC);
-//                                if(j+step>cells[0].length-1){
-//                                    cells[i][cells[0].length-1].getDuck().add(duckC);
-//                                }else{
-//                                    cells[i][j+step1].getDuck().add(duckC);
-//                                }
-//                            }
-//                        }
-//                        //Iterator<Duck> iterator = duck.iterator();
-//                        //Duck duck1 = null;
-////                        while (iterator.hasNext()){
-////                            duck1 = iterator.next();
-////                           // System.out.println(duck1);
-////                            if(duck1.satiety<0.12){
-////                               // System.out.println("move " + duck1);
-////                                iterator.remove();
-////                                if(j+step>cells[0].length-1){
-////                                    cells[i][cells[0].length-1].getDuck().add(duck1);
-////                                }else{
-////                                    cells[i][j+step1].getDuck().add(duck1);
-////                                }
-////                            }
-////                        }
-//
-//                    }
-//
-//                    ArrayList<Duck> duckCopy = new ArrayList<>(duck);
-//                    for (int k = 0; k < duckCopy.size(); k++) {
-//                        Duck duckC = duckCopy.get(k);
-//                        if(duckC.stepDeath==4){
-//                            duck.remove(duckC);
-//                            Duck.deathDuck++;
-//                        }
-//                    }
-//
-//                    for (int k = 0; k < duck.size(); k++) {
-//                        duck.get(k).stepDeath++;
-//                        duck.get(k).satiety-=0.03;
-//                        if(duck.get(k).satiety<0.03) duck.get(k).satiety=0;
-//                        //System.out.println(duck.get(k));
-//                    }

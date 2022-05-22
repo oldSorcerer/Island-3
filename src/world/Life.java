@@ -19,22 +19,8 @@ public class Life {
     public static void runLife(Cell[][] cells){
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
-                ArrayList<Caterpillar> caterpillars = cells[i][j].getCaterpillar();
-                ArrayList<Caterpillar> newCaterpillar = new ArrayList<>();
-                for (int k = 0; k < caterpillars.size(); k++) {
-                    Caterpillar caterpillar = caterpillars.get(k);
-                    Plant plant = cells[i][j].getSynchronizedPlant().get(ThreadLocalRandom.current().nextInt(cells[i][j].getSynchronizedPlant().size()));
-                    caterpillar.eat(plant);
-                    newCaterpillar.addAll(caterpillar.reproduce(cells,i,j,false));
-                }
-                caterpillars.addAll(newCaterpillar);
-                Iterator<Caterpillar> iterator = caterpillars.iterator();
-                while (iterator.hasNext()){
-                    if(iterator.next().satiety==0){
-                        iterator.remove();
-                        Caterpillar.deathGaterpillar++;
-                    }
-                }
+                Caterpillar.life(cells,i,j);
+                Duck.life(cells,i,j);
                 System.out.println("["+(i+1)+", " +(j+1)+"] - "+ cells[i][j]);
             }
             System.out.println(LifeStep.lifeStep +"--------------------------------------------------------------------------------------------------------------------------------");

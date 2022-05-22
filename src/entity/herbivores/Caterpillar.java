@@ -2,13 +2,9 @@ package entity.herbivores;
 
 import entity.Cell;
 import entity.Plant;
-import world.LifeCycle;
-import world.LifeStep;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Caterpillar extends Herbivores {
@@ -18,12 +14,20 @@ public class Caterpillar extends Herbivores {
     public static int newGaterpillar = 0;
     public static int deathGaterpillar = 0;
     private boolean isEat = false;
-    private boolean isMove = false;
     private boolean isReproduce = false;
 
-    //0 - woman
-    //1 - man
-    private int intGender ;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public Caterpillar() {
+        weight = 10;
+        satiety = 3;
+        isEat = true;
+        name = Integer.toString(newGaterpillar);
+    }
 
     public boolean isReproduce() {
         return isReproduce;
@@ -31,14 +35,6 @@ public class Caterpillar extends Herbivores {
 
     public void setReproduce(boolean reproduce) {
         isReproduce = reproduce;
-    }
-
-    public boolean isMove() {
-        return isMove;
-    }
-
-    public void setMove(boolean move) {
-        isMove = move;
     }
 
     public boolean isEat() {
@@ -49,26 +45,16 @@ public class Caterpillar extends Herbivores {
         isEat = eat;
     }
 
-    public Caterpillar() {
-        weight = 10;
-        satiety = 3;
-        isEat = true;
-        isMove = false;
-        intGender = ThreadLocalRandom.current().nextInt(2);
-    }
-    public int getIntGender() {
-        return intGender;
-    }
+
     //гусеницы питаются в методее жизнь, потому что едят(400 гусениц съедают 1 растение)
     @Override
     public void eat() {
-
     }
 
     @Override
     public void move(Cell[][] cells ) {
-
     }
+
     public void eat(Plant plant){
         if(plant.getWeight()>3 && this.isEat == false && this.isReproduce == false){
             plant.setWeight(plant.getWeight()-3);
@@ -79,25 +65,53 @@ public class Caterpillar extends Herbivores {
         }
     }
     public void reproduce(Cell[][] cells, int i, int j){
-
     }
+
     public ArrayList<Caterpillar> reproduce(Cell[][] cells, int i, int j,boolean f) {
         ArrayList<Caterpillar> newCaterpillar = new ArrayList<>();
-        if(this.isReproduce == false && this.intGender == 0 && this.isEat == false){
-            ArrayList<Caterpillar> caterpillars = cells[i][j].getCaterpillar();
-            for (int k=0;k<5;k++){
-                if(Cell.MAX_CATERPILLAR>caterpillars.size()+newCaterpillar.size()){
+        int randomLengthCaterpillar = ThreadLocalRandom.current().nextInt(10);
+        if(this.isReproduce == false && this.isEat == false ){
+            for (int k=0;k<randomLengthCaterpillar;k++){
                     newCaterpillar.add(new Caterpillar());
                     Caterpillar.newGaterpillar++;
-                }
             }
             this.isReproduce=true;
-
         }else{
             this.isReproduce = false;
         }
         this.satiety=0;
         return newCaterpillar;
+    }
+
+    public static void life(Cell[][] cells, int i, int j){
+        ArrayList<Caterpillar> caterpillars = cells[i][j].getCaterpillar();
+        ArrayList<Caterpillar> newCaterpillar = new ArrayList<>();
+        for (int k = 0; k < caterpillars.size(); k++) {
+            Caterpillar caterpillar = caterpillars.get(k);
+            Plant plant = cells[i][j].getSynchronizedPlant().get(ThreadLocalRandom.current().nextInt(cells[i][j].getSynchronizedPlant().size()));
+            caterpillar.eat(plant);
+            newCaterpillar.addAll(caterpillar.reproduce(cells,i,j,false));
+        }
+        caterpillars.addAll(newCaterpillar);
+        int needToKill =0;
+        Iterator<Caterpillar> iterator = caterpillars.iterator();
+        if(caterpillars.size()>1000){
+            needToKill = Math.abs(caterpillars.size()-1000);
+            while (needToKill>0){
+                iterator.next();
+                iterator.remove();
+                Caterpillar.deathGaterpillar++;
+                needToKill--;
+            }
+        }else{
+            while (iterator.hasNext()){
+                Caterpillar caterpillar =iterator.next();
+                if(caterpillar.satiety==0){
+                    iterator.remove();
+                    Caterpillar.deathGaterpillar++;
+                }
+            }
+        }
     }
 
     @Override
