@@ -14,10 +14,10 @@ public class Duck extends Herbivores {
     public static final int MAX_EAT_UP = 150;
     public static final int MAX_DEATH = 4;
 
-    private int stepToDeath =0;
     public static int newDuck= 0;
     public static int deathDuck = 0;
 
+    private int stepToDeath =0;
     private boolean isEat = false;
     private boolean isReproduce = false;
     private boolean isMove = false;
@@ -97,6 +97,7 @@ public class Duck extends Herbivores {
         ArrayList<Duck> arrayListDusckNeedToDelete = new ArrayList<>();
         for (int k = 0; k < ducks.size(); k++) {
             Duck duck = ducks.get(k);
+
             //выбираем что кушаем
             //0-caterpillar
             //1-plant
@@ -108,16 +109,22 @@ public class Duck extends Herbivores {
                 Plant plant = cells[i][j].getSynchronizedPlant().get(ThreadLocalRandom.current().nextInt(cells[i][j].getSynchronizedPlant().size()));
                 duck.eat(plant);
             }
+
+            //размножаемся
             newDuck.addAll(duck.reproduce(cells,i,j,false));
-            //move
+
+            //передвижение
             Duck duckMove = duck.move(cells,i,j);
-            if(duckMove != null) arrayListDusckNeedToDelete.add(duckMove);
+            if(duckMove != null){
+                arrayListDusckNeedToDelete.add(duckMove);
+            }
 
         }
         ducks.addAll(newDuck);
         for (Duck duck: arrayListDusckNeedToDelete) {
             ducks.remove(duck);
         }
+
         int needToKill =0;
         Iterator<Duck> iterator = ducks.iterator();
 
@@ -155,7 +162,6 @@ public class Duck extends Herbivores {
     public void eat(ArrayList<Caterpillar> caterpillars){
         int chanceToEat = ThreadLocalRandom.current().nextInt(100);
         chanceToEat++;
-
         if(caterpillars.size()>15 && this.isEat == false && this.isReproduce == false && (chanceToEat>90) && this.isMove == false) {
             Iterator<Caterpillar> iterator = caterpillars.iterator();
             int needToEat = 15;
@@ -194,7 +200,6 @@ public class Duck extends Herbivores {
     }
 
     public Duck move(Cell[][] cells,int i,int j) {
-
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             int randomStepLength = ThreadLocalRandom.current().nextInt(5);
             int randomWay = ThreadLocalRandom.current().nextInt(4);
@@ -202,10 +207,10 @@ public class Duck extends Herbivores {
             if(randomWay == 0){
                 //west(left)
                 int iStepToLeft = j-randomStepLength;
-                if(iStepToLeft>0){
+                if(iStepToLeft>=0){
                     this.satiety-=38;
                     if(this.satiety<0)stepDeath++;
-                    ArrayList<Duck> MoveToOtherDucks = cells[i][randomStepLength].getDuck();
+                    ArrayList<Duck> MoveToOtherDucks = cells[i][iStepToLeft].getDuck();
                     MoveToOtherDucks.add(this);
                     return this;
                 }else{
@@ -215,13 +220,16 @@ public class Duck extends Herbivores {
             }else if(randomWay == 1){
                 //north(up)
                 int iStepToUp = i-randomStepLength;
-                if(iStepToUp>0){
+                if(iStepToUp>=0){
                     this.satiety-=38;
                     if(this.satiety<0)stepDeath++;
+
                     ArrayList<Duck> MoveToOtherDucks = cells[iStepToUp][j].getDuck();
                     MoveToOtherDucks.add(this);
+
                     return this;
                 }else{
+
                     Duck.deathDuck++;
                     return this;
                 }
@@ -231,10 +239,13 @@ public class Duck extends Herbivores {
                 if(iStepToRight<cells[0].length){
                     this.satiety-=38;
                     if(this.satiety<0)stepDeath++;
+
                     ArrayList<Duck> MoveToOtherDucks = cells[i][iStepToRight].getDuck();
                     MoveToOtherDucks.add(this);
+
                     return this;
                 }else{
+
                     Duck.deathDuck++;
                     return this;
                 }
@@ -248,6 +259,7 @@ public class Duck extends Herbivores {
                     MoveToOtherDucks.add(this);
                     return this;
                 }else{
+
                     Duck.deathDuck++;
                     return this;
                 }
@@ -261,29 +273,7 @@ public class Duck extends Herbivores {
     public void move(Cell[][] cells) {
 
     }
-//
-//        //передвижение произходит по строке, все движутся к концустроки
-//        }else {
-//            int step = ThreadLocalRandom.current().nextInt(2);
-//            step++;
-//            Iterator<Duck> iterator = duck.iterator();
-//            Duck duck1 = null;
-//            while (iterator.hasNext()){
-//                duck1 = iterator.next();
-//                System.out.println(duck1);
-//                if(duck1.satiety<0.12){
-//                    System.out.println("move " + duck1);
-//                    iterator.remove();
-//                    if(j+step>cells[0].length-1){
-//                        cells[i][cells[0].length-1].getDuck().add(duck1);
-//                    }else{
-//                        cells[i][j+step].getDuck().add(duck1);
-//                    }
-//                }
-//            }
-//
-//        }
-//
+
 
     @Override
     public void eat() {
