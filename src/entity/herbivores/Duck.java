@@ -106,8 +106,11 @@ public class Duck extends Herbivores {
                 ArrayList<Caterpillar> caterpillars = cells[i][j].getCaterpillar();
                 duck.eat(caterpillars);
             }else{
-                Plant plant = cells[i][j].getSynchronizedPlant().get(ThreadLocalRandom.current().nextInt(cells[i][j].getSynchronizedPlant().size()));
-                duck.eat(plant);
+                Plant plant = null;
+                if(cells[i][j].getSynchronizedPlant().size()>0){
+                    plant = cells[i][j].getSynchronizedPlant().get(0);
+                    duck.eat(plant);
+                }
             }
 
             //размножаемся
@@ -162,7 +165,7 @@ public class Duck extends Herbivores {
     public void eat(ArrayList<Caterpillar> caterpillars){
         int chanceToEat = ThreadLocalRandom.current().nextInt(100);
         chanceToEat++;
-        if(caterpillars.size()>15 && this.isEat == false && this.isReproduce == false && (chanceToEat>90) && this.isMove == false) {
+        if(caterpillars.size()>15 && this.isEat == false && this.isReproduce == false && (chanceToEat<90) && this.isMove == false) {
             Iterator<Caterpillar> iterator = caterpillars.iterator();
             int needToEat = 15;
             while (iterator.hasNext()){

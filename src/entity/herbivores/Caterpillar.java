@@ -88,8 +88,12 @@ public class Caterpillar extends Herbivores {
         ArrayList<Caterpillar> newCaterpillar = new ArrayList<>();
         for (int k = 0; k < caterpillars.size(); k++) {
             Caterpillar caterpillar = caterpillars.get(k);
-            Plant plant = cells[i][j].getSynchronizedPlant().get(ThreadLocalRandom.current().nextInt(cells[i][j].getSynchronizedPlant().size()));
-            caterpillar.eat(plant);
+            Plant plant = null;
+            if(cells[i][j].getSynchronizedPlant().size()>0){
+                plant = cells[i][j].getSynchronizedPlant().get(0);
+                caterpillar.eat(plant);
+            }
+
             newCaterpillar.addAll(caterpillar.reproduce(cells,i,j,false));
         }
         caterpillars.addAll(newCaterpillar);

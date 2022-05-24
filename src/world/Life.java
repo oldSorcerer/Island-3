@@ -1,8 +1,11 @@
 package world;
 
+import com.sun.tools.javac.Main;
 import entity.Animal;
 import entity.Cell;
 import entity.Plant;
+import entity.herbivores.Boar;
+import entity.herbivores.Buffalo;
 import entity.herbivores.Caterpillar;
 import entity.herbivores.Duck;
 
@@ -21,12 +24,15 @@ public class Life {
             for (int j = 0; j < cells[0].length; j++) {
                 Caterpillar.life(cells,i,j);
                 Duck.life(cells,i,j);
+                Buffalo.life(cells,i,j);
+                Boar.life(cells,i,j);
                 System.out.println("["+(i+1)+", " +(j+1)+"] - "+ cells[i][j]);
             }
-            System.out.println(LifeStep.lifeStep +"--------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("--------------------------------------------------------------------------------------------------------------------------------");
             System.out.println("Plants:" + Plant.newPlants+"/"+Plant.deathPlants+
                     "   Caterpillars:"+Caterpillar.newGaterpillar+"/"+Caterpillar.deathGaterpillar+
-                    "   Duck:" + Duck.newDuck+"/"+Duck.deathDuck);
+                    "   Duck:" + Duck.newDuck+"/"+Duck.deathDuck+
+                    "   Buffalo:" + Buffalo.newBuffalo + "/" + Buffalo.deathBuffalo);
         }
     }
 }

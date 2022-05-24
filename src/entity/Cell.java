@@ -125,7 +125,7 @@ public class Cell {
                 ", goat=" + goat.size() +
                 ", sheep=" + sheep.size() +
                 ", boar=" + boar.size() +
-                ", cow=" + buffalo.size() +
+                ", buffalo=" + buffalo.size() +
                 ", duck=" + duck.size() +
                 ", caterpillar=" + caterpillar.size() +
                 ", plant=" + synchronizedPlant.size();
