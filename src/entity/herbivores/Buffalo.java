@@ -199,7 +199,7 @@ public class Buffalo extends Herbivores {
                     MoveToOtherBuffalo.add(this);
                     return this;
                 }else{
-                    Duck.deathDuck++;
+                    Buffalo.deathBuffalo++;
                     return this;
                 }
             }else if(randomWay == 1){
@@ -215,7 +215,7 @@ public class Buffalo extends Herbivores {
                     return this;
                 }else{
 
-                    Duck.deathDuck++;
+                    Buffalo.deathBuffalo++;
                     return this;
                 }
             }else if(randomWay == 2){
@@ -231,7 +231,7 @@ public class Buffalo extends Herbivores {
                     return this;
                 }else{
 
-                    Duck.deathDuck++;
+                    Buffalo.deathBuffalo++;
                     return this;
                 }
             }else if(randomWay == 3){
@@ -245,7 +245,7 @@ public class Buffalo extends Herbivores {
                     return this;
                 }else{
 
-                    Duck.deathDuck++;
+                    Buffalo.deathBuffalo++;
                     return this;
                 }
             }

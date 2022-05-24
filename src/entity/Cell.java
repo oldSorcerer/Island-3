@@ -121,7 +121,7 @@ public class Cell {
                 ", horse=" + horse.size() +
                 ", deer=" + deer.size() +
                 ", rabbit=" + rabbit.size() +
-                ", hamster=" + mouse.size() +
+                ", mouse=" + mouse.size() +
                 ", goat=" + goat.size() +
                 ", sheep=" + sheep.size() +
                 ", boar=" + boar.size() +

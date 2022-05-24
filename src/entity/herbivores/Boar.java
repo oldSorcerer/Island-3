@@ -102,7 +102,7 @@ public class Boar extends Herbivores {
             //0-caterpillar
             //1-plant
             //2-mouse
-            int randomFood = ThreadLocalRandom.current().nextInt(2);
+            int randomFood = ThreadLocalRandom.current().nextInt(3);
             if(randomFood == 0){
                 ArrayList<Caterpillar> caterpillars = cells[i][j].getCaterpillar();
                 boar.eat(caterpillars);
@@ -113,21 +113,20 @@ public class Boar extends Herbivores {
                 ArrayList<Mouse> Mouses = cells[i][j].getMouse();
                 boar.eat(Mouses);
             }
-//---------------------------------------
             //размножаемся
-//            newDuck.addAll(duck.reproduce(cells,i,j,false));
+            newBoar.addAll(boar.reproduce(cells,i,j,false));
 //
-//            //передвижение
-//            Duck duckMove = duck.move(cells,i,j);
-//            if(duckMove != null){
-//                arrayListDusckNeedToDelete.add(duckMove);
-//            }
+            //передвижение
+            Boar boarMove = boar.move(cells,i,j);
+            if(boarMove != null){
+                arrayListDusckNeedToDelete.add(boarMove);
+            }
 //
         }
-//        ducks.addAll(newDuck);
-//        for (Duck duck: arrayListDusckNeedToDelete) {
-//            ducks.remove(duck);
-//        }
+        boars.addAll(newBoar);
+        for (Boar boar: arrayListDusckNeedToDelete) {
+            boars.remove(boar);
+        }
 //
         int needToKill =0;
         Iterator<Boar> iterator = boars.iterator();
@@ -150,6 +149,7 @@ public class Boar extends Herbivores {
             }
         }
     }
+
     public void eat(List<Plant> plants){
         //кабаны едят половина растений на карте, если он даже немного поел ставлю ему поленое насыщение иноже он вымирает
         if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
@@ -180,7 +180,6 @@ public class Boar extends Herbivores {
         if(animal.size()>0){
             object = animal.get(0);
             if(object instanceof Caterpillar){
-                System.out.println("eat caterpillar");
                 int chanceToEat = ThreadLocalRandom.current().nextInt(100);
                 chanceToEat++;
                 if(this.isEat == false && this.isReproduce == false  && this.isMove == false && (chanceToEat<90)) {
@@ -199,7 +198,6 @@ public class Boar extends Herbivores {
                     if(this.satiety<0)stepDeath++;
                 }
             }else if(object instanceof Mouse){
-                System.out.println("eat mouse");
                 int chanceToEat = ThreadLocalRandom.current().nextInt(100);
                 chanceToEat++;
                 if(this.isEat == false && this.isReproduce == false  && this.isMove == false && (chanceToEat<50)) {
@@ -229,6 +227,94 @@ public class Boar extends Herbivores {
 
     }
 
+    public ArrayList<Boar> reproduce(Cell[][] cells, int i, int j,boolean f) {
+        ArrayList<Boar> newBoar= new ArrayList<>();
+        int randomLengthBoar = ThreadLocalRandom.current().nextInt(1);
+        if(this.isReproduce == false && this.isEat == false && this.isMove == false){
+
+            for (int k=0;k<randomLengthBoar;k++){
+                newBoar.add(new Boar());
+                Boar.newBoar++;
+            }
+            this.isReproduce=true;
+        }else{
+            this.isReproduce = false;
+        }
+        this.satiety-=25_000;;
+        if(this.satiety<0)stepDeath++;
+        return newBoar;
+    }
+
+    public Boar move(Cell[][] cells,int i,int j) {
+        if(this.isEat == false && this.isReproduce == false && this.isMove == false){
+            int randomStepLength = ThreadLocalRandom.current().nextInt(3);
+            int randomWay = ThreadLocalRandom.current().nextInt(4);
+            this.isMove=true;
+            if(randomWay == 0){
+                //west(left)
+                int iStepToLeft = j-randomStepLength;
+                if(iStepToLeft>=0){
+                    this.satiety-=25_000;
+                    if(this.satiety<0)stepDeath++;
+                    ArrayList<Boar> MoveToOtherBoar = cells[i][iStepToLeft].getBoar();
+                    MoveToOtherBoar.add(this);
+                    return this;
+                }else{
+                    Duck.deathDuck++;
+                    return this;
+                }
+            }else if(randomWay == 1){
+                //north(up)
+                int iStepToUp = i-randomStepLength;
+                if(iStepToUp>=0){
+                    this.satiety-=25_000;
+                    if(this.satiety<0)stepDeath++;
+
+                    ArrayList<Boar> MoveToOtherBoar = cells[iStepToUp][j].getBoar();
+                    MoveToOtherBoar.add(this);
+
+                    return this;
+                }else{
+
+                    Boar.deathBoar++;
+                    return this;
+                }
+            }else if(randomWay == 2){
+                //east(right)
+                int iStepToRight = j+randomStepLength;
+                if(iStepToRight<cells[0].length){
+                    this.satiety-=25_000;
+                    if(this.satiety<0)stepDeath++;
+
+                    ArrayList<Boar> MoveToOtherBoar = cells[i][iStepToRight].getBoar();
+                    MoveToOtherBoar.add(this);
+
+                    return this;
+                }else{
+
+                    Boar.deathBoar++;
+                    return this;
+                }
+            }else if(randomWay == 3){
+                //south(down)
+                int iStepToDown = i+randomStepLength;
+                if(iStepToDown<cells.length){
+                    this.satiety-=25_000;
+                    if(this.satiety<0)stepDeath++;
+                    ArrayList<Boar> MoveToOtherBoar = cells[iStepToDown][j].getBoar();
+                    MoveToOtherBoar.add(this);
+                    return this;
+                }else{
+
+                    Boar.deathBoar++;
+                    return this;
+                }
+            }
+        }else{
+            this.isMove = false;
+        }
+        return  null;
+    }
 
     @Override
     public void eat() {

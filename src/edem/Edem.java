@@ -41,7 +41,7 @@ public class Edem {
             }else if(numberOfAnimal == 3){
                 //кабан
                 cell.getBoar().add(new Boar());
-                Boa.newBoa++;
+                Boar.newBoar++;
             }else if(numberOfAnimal == 4){
                 //sheep
                 cell.getSheep().add(new Sheep());
