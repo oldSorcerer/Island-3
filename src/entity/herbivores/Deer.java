@@ -2,6 +2,8 @@ package entity.herbivores;
 
 import entity.Cell;
 
+import java.util.ArrayList;
+
 public class Deer extends Herbivores {
     public static final double MAX_EAT_UP = 26;
     public static final int MAX_DEATH = 4;
@@ -23,7 +25,7 @@ public class Deer extends Herbivores {
     }
 
     @Override
-    public void reproduce(Cell[][] cells, int i, int j) {
-
+    public ArrayList<Deer> reproduce(Cell[][] cells, int i, int j) {
+        return  null;
     }
 }

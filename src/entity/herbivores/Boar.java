@@ -1,9 +1,7 @@
 package entity.herbivores;
 
-import entity.Animal;
 import entity.Cell;
 import entity.Plant;
-import entity.predator.Boa;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,61 +10,18 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Boar extends Herbivores {
-    public static final double MAX_EAT_UP = 7;
-    public static final int MAX_DEATH = 8;
-
     public static int newBoar = 0;
     public static int deathBoar = 0;
-    private int stepToDeath =0;
-    private boolean isEat = false;
-    private boolean isReproduce = false;
-    private boolean isMove = false;
-    private String name = new String();
     public Boar() {
         weight = 400_000;
         stepDeath = 0;
         name = Integer.toString(newBoar);
-        satiety = 50_000;
-    }
-
-    public int getStepToDeath() {
-        return stepToDeath;
-    }
-
-    public void setStepToDeath(int stepToDeath) {
-        this.stepToDeath = stepToDeath;
-    }
-
-    public boolean isEat() {
-        return isEat;
-    }
-
-    public void setEat(boolean eat) {
-        isEat = eat;
-    }
-
-    public boolean isReproduce() {
-        return isReproduce;
-    }
-
-    public void setReproduce(boolean reproduce) {
-        isReproduce = reproduce;
-    }
-
-    public boolean isMove() {
-        return isMove;
-    }
-
-    public void setMove(boolean move) {
-        isMove = move;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        // кабаны слишком много едят, потому что получается что один кабан есть половину популяции мышей или гусениц
+        // пусть кабан есть 5% от массы собственного веса 20 кг == 20_000 грамм
+        satiety = 20_000;
+        isEat = true;
+        isMove = false;
+        isReproduce = false;
     }
 
     @Override
@@ -76,7 +31,6 @@ public class Boar extends Herbivores {
         Boar boar = (Boar) o;
         return Objects.equals(name, boar.name);
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(name);
@@ -114,7 +68,7 @@ public class Boar extends Herbivores {
                 boar.eat(Mouses);
             }
             //размножаемся
-            newBoar.addAll(boar.reproduce(cells,i,j,false));
+            newBoar.addAll(boar.reproduce(cells,i,j));
 //
             //передвижение
             Boar boarMove = boar.move(cells,i,j);
@@ -130,9 +84,9 @@ public class Boar extends Herbivores {
 //
         int needToKill =0;
         Iterator<Boar> iterator = boars.iterator();
-
-        if(boars.size()>50){
-            needToKill = Math.abs(boars.size()-50);
+        // уменьшаю количество кабанов с 50 до 10
+        if(boars.size()>10){
+            needToKill = Math.abs(boars.size()-10);
             while (needToKill>0){
                 iterator.next();
                 iterator.remove();
@@ -154,7 +108,7 @@ public class Boar extends Herbivores {
         //кабаны едят половина растений на карте, если он даже немного поел ставлю ему поленое насыщение иноже он вымирает
         if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
             Iterator<Plant> iterator = plants.iterator();
-            int needToEat = 50;
+            int needToEat = 20;
             while (iterator.hasNext()){
                 iterator.next();
                 iterator.remove();
@@ -162,14 +116,14 @@ public class Boar extends Herbivores {
                 needToEat--;
                 if(needToEat ==0)break;
             }
-            this.satiety=50_000;
+            this.satiety=20_000;
 
 
             this.stepDeath =0;
             this.isEat = true;
         }else{
             this.isEat = false;
-            this.satiety-=12_500;
+            this.satiety-=10_000;
             if(this.satiety<0)stepDeath++;
         }
     }
@@ -180,25 +134,33 @@ public class Boar extends Herbivores {
         if(animal.size()>0){
             object = animal.get(0);
             if(object instanceof Caterpillar){
+                //гусеницы питательние чем трава, получается 1 гусеница = 100 грамм
+                //чтобы кабан наелся он должен съесть 500 гусениц
+                // если гусеницы закончились, все равно ставим, что кабан наелся
                 int chanceToEat = ThreadLocalRandom.current().nextInt(100);
                 chanceToEat++;
                 if(this.isEat == false && this.isReproduce == false  && this.isMove == false && (chanceToEat<90)) {
                     Iterator<T> iterator = animal.iterator();
+                    int needToEat = 200;
                     while (iterator.hasNext()){
                         iterator.next();
                         iterator.remove();
                         Caterpillar.deathGaterpillar++;
+                        needToEat--;
+                        if(needToEat ==0)break;
                     }
-                    this.satiety = 50_000;
+                    this.satiety = 20_000;
                     this.stepDeath = 0;
                     this.isEat = true;
                 }else{
                     this.isEat = false;
-                    this.satiety-=12_500;
+                    this.satiety-=10_000;
                     if(this.satiety<0)stepDeath++;
                 }
             }else if(object instanceof Mouse){
+                //мышь питательние чем трава, получается 1 мышь = 500 грамм
                 int chanceToEat = ThreadLocalRandom.current().nextInt(100);
+                int needToEat = 40;
                 chanceToEat++;
                 if(this.isEat == false && this.isReproduce == false  && this.isMove == false && (chanceToEat<50)) {
                     Iterator<T> iterator = animal.iterator();
@@ -206,19 +168,21 @@ public class Boar extends Herbivores {
                         iterator.next();
                         iterator.remove();
                         Mouse.deathMouse++;
+                        needToEat--;
+                        if(needToEat ==0)break;
                     }
-                    this.satiety = 50_000;
+                    this.satiety = 20_000;
                     this.stepDeath = 0;
                     this.isEat = true;
                 }else{
                     this.isEat = false;
-                    this.satiety-=12_500;
+                    this.satiety-=10_000;
                     if(this.satiety<0)stepDeath++;
                 }
             }
         }else{
             this.isEat = false;
-            this.satiety-=12_500;
+            this.satiety-=10_000;
             if(this.satiety<0)stepDeath++;
         }
 
@@ -226,8 +190,8 @@ public class Boar extends Herbivores {
         //ест все растения, ставим ему полное насыщение
 
     }
-
-    public ArrayList<Boar> reproduce(Cell[][] cells, int i, int j,boolean f) {
+    @Override
+    public ArrayList<Boar> reproduce(Cell[][] cells, int i, int j) {
         ArrayList<Boar> newBoar= new ArrayList<>();
         int randomLengthBoar = ThreadLocalRandom.current().nextInt(1);
         if(this.isReproduce == false && this.isEat == false && this.isMove == false){
@@ -240,7 +204,7 @@ public class Boar extends Herbivores {
         }else{
             this.isReproduce = false;
         }
-        this.satiety-=25_000;;
+        this.satiety-=10_000;;
         if(this.satiety<0)stepDeath++;
         return newBoar;
     }
@@ -326,8 +290,5 @@ public class Boar extends Herbivores {
 
     }
 
-    @Override
-    public void reproduce(Cell[][] cells, int i, int j) {
 
-    }
 }

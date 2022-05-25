@@ -5,82 +5,41 @@ import entity.Plant;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Caterpillar extends Herbivores {
-    // гусеница может скущать за раз 0.0025 кг = (округлил) 3 грамм
-    public static final int MAX_EAT_UP = 3;
-
     public static int newGaterpillar = 0;
     public static int deathGaterpillar = 0;
-    private boolean isEat = false;
-    private boolean isReproduce = false;
-
-    private String name;
-
-    public String getName() {
-        return name;
-    }
 
     public Caterpillar() {
         weight = 10;
         satiety = 3;
         isEat = true;
+        isMove = false;
+        isReproduce = false;
         name = Integer.toString(newGaterpillar);
     }
-
-    public boolean isReproduce() {
-        return isReproduce;
-    }
-
-    public void setReproduce(boolean reproduce) {
-        isReproduce = reproduce;
-    }
-
-    public boolean isEat() {
-        return isEat;
-    }
-
-    public void setEat(boolean eat) {
-        isEat = eat;
-    }
-
-
-    //гусеницы питаются в методее жизнь, потому что едят(400 гусениц съедают 1 растение)
     @Override
-    public void eat() {
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Caterpillar caterpillar = (Caterpillar) o;
+        return Objects.equals(name, caterpillar.name);
     }
 
     @Override
-    public void move(Cell[][] cells ) {
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
-    public void eat(Plant plant){
-        if(plant.getWeight()>3 && this.isEat == false && this.isReproduce == false){
-            plant.setWeight(plant.getWeight()-3);
-            this.satiety=3;
-            this.isEat = true;
-        }else {
-            this.isEat = false;
-        }
-    }
-    public void reproduce(Cell[][] cells, int i, int j){
-    }
-
-    public ArrayList<Caterpillar> reproduce(Cell[][] cells, int i, int j,boolean f) {
-        ArrayList<Caterpillar> newCaterpillar = new ArrayList<>();
-        int randomLengthCaterpillar = ThreadLocalRandom.current().nextInt(10);
-        if(this.isReproduce == false && this.isEat == false ){
-            for (int k=0;k<randomLengthCaterpillar;k++){
-                    newCaterpillar.add(new Caterpillar());
-                    Caterpillar.newGaterpillar++;
-            }
-            this.isReproduce=true;
-        }else{
-            this.isReproduce = false;
-        }
-        this.satiety=0;
-        return newCaterpillar;
+    @Override
+    public String toString() {
+        return "Caterpillar{" +
+                "weight=" + weight +
+                ", satiety=" + satiety +
+                ", stepDeath=" + stepDeath +
+                '}';
     }
 
     public static void life(Cell[][] cells, int i, int j){
@@ -94,7 +53,7 @@ public class Caterpillar extends Herbivores {
                 caterpillar.eat(plant);
             }
 
-            newCaterpillar.addAll(caterpillar.reproduce(cells,i,j,false));
+            newCaterpillar.addAll(caterpillar.reproduce(cells,i,j));
         }
         caterpillars.addAll(newCaterpillar);
         int needToKill =0;
@@ -117,13 +76,41 @@ public class Caterpillar extends Herbivores {
             }
         }
     }
+    //гусеницы питаются в методее жизнь, потому что едят(400 гусениц съедают 1 растение
+    @Override
+    public void eat() {
+    }
 
     @Override
-    public String toString() {
-        return "Caterpillar{" +
-                "weight=" + weight +
-                ", satiety=" + satiety +
-                ", stepDeath=" + stepDeath +
-                '}';
+    public void move(Cell[][] cells ) {
+
     }
+    public void eat(Plant plant){
+        if(plant.getWeight()>3 && this.isEat == false && this.isReproduce == false){
+            plant.setWeight(plant.getWeight()-3);
+            this.satiety=3;
+            this.isEat = true;
+        }else {
+            this.isEat = false;
+        }
+    }
+//    public void reproduce(Cell[][] cells, int i, int j){
+//    }
+
+    public ArrayList<Caterpillar> reproduce(Cell[][] cells, int i, int j) {
+        ArrayList<Caterpillar> newCaterpillar = new ArrayList<>();
+        int randomLengthCaterpillar = ThreadLocalRandom.current().nextInt(50);
+        if(this.isReproduce == false && this.isEat == false ){
+            for (int k=0;k<randomLengthCaterpillar;k++){
+                newCaterpillar.add(new Caterpillar());
+                Caterpillar.newGaterpillar++;
+            }
+            this.isReproduce=true;
+        }else{
+            this.isReproduce = false;
+        }
+        this.satiety=0;
+        return newCaterpillar;
+    }
+
 }

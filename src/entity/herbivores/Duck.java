@@ -11,63 +11,17 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Duck extends Herbivores {
-    public static final int MAX_EAT_UP = 150;
-    public static final int MAX_DEATH = 4;
-
     public static int newDuck= 0;
     public static int deathDuck = 0;
-
-    private int stepToDeath =0;
-    private boolean isEat = false;
-    private boolean isReproduce = false;
-    private boolean isMove = false;
-    private String name = new String();
 
     public Duck() {
         weight = 1000;
         stepDeath = 0;
         name = Integer.toString(newDuck);
         satiety = 150;
-    }
-
-    public int getStepToDeath() {
-        return stepToDeath;
-    }
-
-    public void setStepToDeath(int stepToDeath) {
-        this.stepToDeath = stepToDeath;
-    }
-
-    public boolean isEat() {
-        return isEat;
-    }
-
-    public void setEat(boolean eat) {
-        isEat = eat;
-    }
-
-    public boolean isReproduce() {
-        return isReproduce;
-    }
-
-    public void setReproduce(boolean reproduce) {
-        isReproduce = reproduce;
-    }
-
-    public boolean isMove() {
-        return isMove;
-    }
-
-    public void setMove(boolean move) {
-        isMove = move;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        isEat = false;
+        isMove = false;
+        isReproduce = false;
     }
 
     @Override
@@ -91,6 +45,7 @@ public class Duck extends Herbivores {
                 ", stepDeath=" + stepDeath +
                 '}';
     }
+
     public static void life(Cell[][] cells, int i, int j){
         ArrayList<Duck> ducks = cells[i][j].getDuck();
         ArrayList<Duck> newDuck = new ArrayList<>();
@@ -114,7 +69,7 @@ public class Duck extends Herbivores {
             }
 
             //размножаемся
-            newDuck.addAll(duck.reproduce(cells,i,j,false));
+            newDuck.addAll(duck.reproduce(cells,i,j));
 
             //передвижение
             Duck duckMove = duck.move(cells,i,j);
@@ -184,8 +139,8 @@ public class Duck extends Herbivores {
             if(this.satiety<0)stepDeath++;
         }
     }
-
-    public ArrayList<Duck> reproduce(Cell[][] cells, int i, int j,boolean f) {
+    @Override
+    public ArrayList<Duck> reproduce(Cell[][] cells, int i, int j) {
         ArrayList<Duck> newDuck= new ArrayList<>();
         int randomLengthCaterpillar = ThreadLocalRandom.current().nextInt(2);
         if(this.isReproduce == false && this.isEat == false && this.isMove == false){
@@ -277,17 +232,11 @@ public class Duck extends Herbivores {
 
     }
 
-
     @Override
     public void eat() {
 
     }
 
 
-
-    @Override
-    public void reproduce(Cell[][] cells, int i, int j) {
-
-    }
 }
 

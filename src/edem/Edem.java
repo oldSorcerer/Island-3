@@ -15,7 +15,7 @@ public class Edem {
 
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
-                generatorAnimal(cells[i][j],700);
+                generatorAnimal(cells[i][j],300);
             }
         }
     }

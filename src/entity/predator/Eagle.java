@@ -2,6 +2,8 @@ package entity.predator;
 
 import entity.Cell;
 
+import java.util.ArrayList;
+
 public class Eagle extends Predator{
     public static final double MAX_EAT_UP = 1;
     public static final int MAX_DEATH = 5;
@@ -23,7 +25,7 @@ public class Eagle extends Predator{
     }
 
     @Override
-    public void reproduce(Cell[][] cells, int i, int j) {
-
+    public ArrayList<Eagle> reproduce(Cell[][] cells, int i, int j) {
+        return null;
     }
 }

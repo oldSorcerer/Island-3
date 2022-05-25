@@ -23,7 +23,8 @@ public class Cell {
     public static final int MAX_BUFFALO = 10;
     public static final int MAX_DUCK = 200;
     public static final int MAX_CATERPILLAR = 1000;
-    public static final int MAX_PLANT = 200;
+    //мак кол. растений стоит 200, увелитчил до 1000
+    public static final int MAX_PLANT = 1000;
 
 
 
