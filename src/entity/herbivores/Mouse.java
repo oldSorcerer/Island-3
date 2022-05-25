@@ -145,7 +145,7 @@ public class Mouse extends Herbivores {
     @Override
     public ArrayList<Mouse> reproduce(Cell[][] cells, int i, int j) {
         ArrayList<Mouse> newMouse= new ArrayList<>();
-        int randomLengthCaterpillar = ThreadLocalRandom.current().nextInt(5);
+        int randomLengthCaterpillar = ThreadLocalRandom.current().nextInt(8);
         if(this.isReproduce == false && this.isEat == false && this.isMove == false){
             for (int k=0;k<randomLengthCaterpillar;k++){
                 newMouse.add(new Mouse());

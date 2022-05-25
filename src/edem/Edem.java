@@ -11,7 +11,7 @@ public class Edem {
     static ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(2);
 
     public static void runEdem(Cell[][] cells){
-        scheduledPool.scheduleAtFixedRate(new EdemPlants(cells),0,1100, TimeUnit.MILLISECONDS);
+        scheduledPool.scheduleAtFixedRate(new EdemPlants(cells),0,500, TimeUnit.MILLISECONDS);
 
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {

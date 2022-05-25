@@ -17,7 +17,7 @@ public class Buffalo extends Herbivores {
         weight = 700_000;
         stepDeath = 0;
         name = Integer.toString(newBuffalo);
-        satiety = 100_000;
+        satiety = 35_000;
         isEat = false;
         isMove = false;
         isReproduce = false;
@@ -93,9 +93,10 @@ public class Buffalo extends Herbivores {
     }
     public void eat(List<Plant> plants){
         //если он даже немного поел ставлю ему поленое насыщение иначе он вымирает
+        //ест 5 % от массы
         if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
             Iterator<Plant> iterator = plants.iterator();
-            int needToEat = 100;
+            int needToEat = 35;
             while (iterator.hasNext()){
                 iterator.next();
                 iterator.remove();
@@ -103,12 +104,12 @@ public class Buffalo extends Herbivores {
                 needToEat--;
                 if(needToEat ==0)break;
             }
-            this.satiety=100_000;
+            this.satiety=35_000;
             this.stepDeath =0;
             this.isEat = true;
         }else{
             this.isEat = false;
-            this.satiety-=34_000;
+            this.satiety-=11_700;
             if(this.satiety<0)stepDeath++;
         }
     }
@@ -125,7 +126,7 @@ public class Buffalo extends Herbivores {
         }else{
             this.isReproduce = false;
         }
-        this.satiety-=34_000;
+        this.satiety-=11_700;
         if(this.satiety<0)stepDeath++;
         return newBuffalo;
     }
@@ -139,7 +140,7 @@ public class Buffalo extends Herbivores {
                 //west(left)
                 int iStepToLeft = j-randomStepLength;
                 if(iStepToLeft>=0){
-                    this.satiety-=34_000;
+                    this.satiety-=11_700;
                     if(this.satiety<0)stepDeath++;
                     ArrayList<Buffalo> MoveToOtherBuffalo = cells[i][iStepToLeft].getBuffalo();
                     MoveToOtherBuffalo.add(this);
@@ -152,7 +153,7 @@ public class Buffalo extends Herbivores {
                 //north(up)
                 int iStepToUp = i-randomStepLength;
                 if(iStepToUp>=0){
-                    this.satiety-=34_000;
+                    this.satiety-=11_700;
                     if(this.satiety<0)stepDeath++;
 
                     ArrayList<Buffalo> MoveToOtherBuffalo = cells[iStepToUp][j].getBuffalo();
@@ -168,7 +169,7 @@ public class Buffalo extends Herbivores {
                 //east(right)
                 int iStepToRight = j+randomStepLength;
                 if(iStepToRight<cells[0].length){
-                    this.satiety-=34_000;
+                    this.satiety-=11_700;
                     if(this.satiety<0)stepDeath++;
 
                     ArrayList<Buffalo> MoveToOtherBuffalo = cells[i][iStepToRight].getBuffalo();
@@ -184,7 +185,7 @@ public class Buffalo extends Herbivores {
                 //south(down)
                 int iStepToDown = i+randomStepLength;
                 if(iStepToDown<cells.length){
-                    this.satiety-=34_000;
+                    this.satiety-=11_700;
                     if(this.satiety<0)stepDeath++;
                     ArrayList<Buffalo> MoveToOtherBuffalo = cells[iStepToDown][j].getBuffalo();
                     MoveToOtherBuffalo.add(this);

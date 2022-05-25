@@ -48,7 +48,7 @@ public class Boar extends Herbivores {
     public static void life(Cell[][] cells, int i, int j){
         ArrayList<Boar> boars = cells[i][j].getBoar();
         ArrayList<Boar> newBoar = new ArrayList<>();
-        ArrayList<Boar> arrayListDusckNeedToDelete = new ArrayList<>();
+        ArrayList<Boar> arrayListBoarNeedToDelete = new ArrayList<>();
         for (int k = 0; k < boars.size(); k++) {
             Boar boar = boars.get(k);
 
@@ -73,12 +73,12 @@ public class Boar extends Herbivores {
             //передвижение
             Boar boarMove = boar.move(cells,i,j);
             if(boarMove != null){
-                arrayListDusckNeedToDelete.add(boarMove);
+                arrayListBoarNeedToDelete.add(boarMove);
             }
 //
         }
         boars.addAll(newBoar);
-        for (Boar boar: arrayListDusckNeedToDelete) {
+        for (Boar boar: arrayListBoarNeedToDelete) {
             boars.remove(boar);
         }
 //

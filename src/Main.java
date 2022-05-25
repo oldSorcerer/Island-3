@@ -1,18 +1,7 @@
 import edem.Edem;
 
-import edem.EdemPlants;
 import entity.Cell;
-import entity.Plant;
-import entity.herbivores.Caterpillar;
-import entity.herbivores.Duck;
 import world.Life;
-import world.LifeCycle;
-import world.LifeStep;
-
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -21,8 +10,8 @@ public class Main {
         //begin initial block-------------------------------------------------------------------------------------------
         Cell[][] cells = new Cell[5][5];
 
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells[0].length; j++) {
                 cells[i][j] = new Cell();
             }
         }
@@ -33,7 +22,7 @@ public class Main {
 
 
         int step = 0;
-        while(step <15){
+        while(step <5){
             Thread.sleep(1000);
             Life.runLife(cells);
             step++;

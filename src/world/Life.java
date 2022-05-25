@@ -5,14 +5,11 @@ import entity.Animal;
 import entity.Cell;
 import entity.Plant;
 import entity.herbivores.*;
+import entity.predator.Bear;
+import entity.predator.Eagle;
+import entity.predator.Fox;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
+
 
 public class Life {
 
@@ -28,6 +25,10 @@ public class Life {
                 Mouse.life(cells,i,j);
                 Rabbit.life(cells,i,j);
                 Deer.life(cells,i,j);
+                Horse.life(cells,i,j);
+                Eagle.life(cells,i,j);
+                Bear.life(cells,i,j);
+                Fox.life(cells,i,j);
                 System.out.println("["+(i+1)+", " +(j+1)+"] - "+ cells[i][j]);
             }
             System.out.println("--------------------------------------------------------------------------------------------------------------------------------");
@@ -40,7 +41,11 @@ public class Life {
                     "   Goat:" + Goat.newGoat + "/" + Goat.deathGoat +
                     "   Mouse:" + Mouse.newMouse + "/" + Mouse.deathMouse +
                     "   Rabbit:" + Rabbit.newRabbit + "/" + Rabbit.deathRabbit +
-                    "   Deer:" + Deer.newDeer + "/" + Deer.deathDeer);
+                    "   Deer:" + Deer.newDeer + "/" + Deer.deathDeer +
+                    "   Horse:" + Horse.newHorse + "/" + Horse.deathHorse + "\n" +
+                    "Eagle:" + Eagle.newEagle + "/" + Eagle.deathEagle +
+                    "   Bear:" +Bear.newBear + "/" + Bear.deathBear +
+                    "   Fox:" + Fox.newFox + "/" + Fox.deathFox);
         }
     }
 }
