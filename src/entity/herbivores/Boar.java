@@ -106,6 +106,7 @@ public class Boar extends Herbivores {
 
     public void eat(List<Plant> plants){
         //кабаны едят половина растений на карте, если он даже немного поел ставлю ему поленое насыщение иноже он вымирает
+        //кабан есть 5 % от своего веса
         if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
             Iterator<Plant> iterator = plants.iterator();
             int needToEat = 20;
@@ -193,9 +194,8 @@ public class Boar extends Herbivores {
     @Override
     public ArrayList<Boar> reproduce(Cell[][] cells, int i, int j) {
         ArrayList<Boar> newBoar= new ArrayList<>();
-        int randomLengthBoar = ThreadLocalRandom.current().nextInt(1);
+        int randomLengthBoar = ThreadLocalRandom.current().nextInt(2);
         if(this.isReproduce == false && this.isEat == false && this.isMove == false){
-
             for (int k=0;k<randomLengthBoar;k++){
                 newBoar.add(new Boar());
                 Boar.newBoar++;
@@ -224,7 +224,7 @@ public class Boar extends Herbivores {
                     MoveToOtherBoar.add(this);
                     return this;
                 }else{
-                    Duck.deathDuck++;
+                    Boar.deathBoar++;
                     return this;
                 }
             }else if(randomWay == 1){

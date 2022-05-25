@@ -27,6 +27,7 @@ public class Life {
                 Goat.life(cells,i,j);
                 Mouse.life(cells,i,j);
                 Rabbit.life(cells,i,j);
+                Deer.life(cells,i,j);
                 System.out.println("["+(i+1)+", " +(j+1)+"] - "+ cells[i][j]);
             }
             System.out.println("--------------------------------------------------------------------------------------------------------------------------------");
@@ -38,7 +39,8 @@ public class Life {
                     "   Sheep:" + Sheep.newSheep + "/" + Sheep.deathSheep +
                     "   Goat:" + Goat.newGoat + "/" + Goat.deathGoat +
                     "   Mouse:" + Mouse.newMouse + "/" + Mouse.deathMouse +
-                    "   Rabbit:" + Rabbit.newRabbit + "/" + Rabbit.deathRabbit);
+                    "   Rabbit:" + Rabbit.newRabbit + "/" + Rabbit.deathRabbit +
+                    "   Deer:" + Deer.newDeer + "/" + Deer.deathDeer);
         }
     }
 }

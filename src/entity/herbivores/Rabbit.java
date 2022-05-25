@@ -143,7 +143,7 @@ public class Rabbit extends Herbivores {
                 //west(left)
                 int iStepToLeft = j-randomStepLength;
                 if(iStepToLeft>=0){
-                    this.satiety-=23_400;
+                    this.satiety-=227;
                     if(this.satiety<0)stepDeath++;
                     ArrayList<Rabbit> MoveToOtherRabbit = cells[i][iStepToLeft].getRabbit();
                     MoveToOtherRabbit.add(this);
@@ -182,7 +182,7 @@ public class Rabbit extends Herbivores {
                 //south(down)
                 int iStepToDown = i+randomStepLength;
                 if(iStepToDown<cells.length){
-                    this.satiety-=23_400;
+                    this.satiety-=227;
                     if(this.satiety<0)stepDeath++;
                     ArrayList<Rabbit> MoveToOtherRabbit = cells[iStepToDown][j].getRabbit();
                     MoveToOtherRabbit.add(this);

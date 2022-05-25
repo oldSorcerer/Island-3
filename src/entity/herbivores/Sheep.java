@@ -44,6 +44,7 @@ public class Sheep extends Herbivores {
                 ", stepDeath=" + stepDeath +
                 '}';
     }
+
     public static void life(Cell[][] cells, int i, int j){
         ArrayList<Sheep> sheeps = cells[i][j].getSheep();
         ArrayList<Sheep> newSheep = new ArrayList<>();
