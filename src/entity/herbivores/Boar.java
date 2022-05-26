@@ -208,7 +208,7 @@ public class Boar extends Herbivores {
         if(this.satiety<0)stepDeath++;
         return newBoar;
     }
-
+    @Override
     public Boar move(Cell[][] cells,int i,int j) {
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             int randomStepLength = ThreadLocalRandom.current().nextInt(3);
@@ -284,11 +284,5 @@ public class Boar extends Herbivores {
     public void eat() {
 
     }
-
-    @Override
-    public void move(Cell[][] cells) {
-
-    }
-
 
 }

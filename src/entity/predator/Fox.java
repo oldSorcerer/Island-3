@@ -72,19 +72,19 @@ public class Fox extends Predator{
             }
             //размножаемся
             newFox.addAll(fox.reproduce(cells,i,j));
-//
+
             //передвижение
             Fox foxMove = fox.move(cells,i,j);
             if(foxMove != null){
                 arrayListFoxNeedToDelete.add(foxMove);
             }
-//
+
         }
         foxes.addAll(newFox);
         for (Fox fox: arrayListFoxNeedToDelete) {
             foxes.remove(fox);
         }
-//
+
         int needToKill =0;
         Iterator<Fox> iterator = foxes.iterator();
         if(foxes.size()>30){
@@ -108,7 +108,6 @@ public class Fox extends Predator{
 
     public <T> void  eat(ArrayList<T> animal){
         Object object = null;
-        //System.out.println("eat Animal");
         if(animal.size()>0){
             object = animal.get(0);
             if(object instanceof Caterpillar){
@@ -220,16 +219,8 @@ public class Fox extends Predator{
         if(this.satiety<0)stepDeath++;
         return newFox;
     }
-    @Override
-    public void eat() {
-
-    }
 
     @Override
-    public void move(Cell[][] cells) {
-
-    }
-
     public Fox move(Cell[][] cells,int i,int j) {
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             int randomStepLength = ThreadLocalRandom.current().nextInt(3);
@@ -293,5 +284,8 @@ public class Fox extends Predator{
         }
         return  null;
     }
+    @Override
+    public void eat() {
 
+    }
 }

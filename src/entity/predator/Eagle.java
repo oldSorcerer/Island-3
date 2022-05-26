@@ -102,10 +102,6 @@ public class Eagle extends Predator{
             }
         }
     }
-    @Override
-    public void eat() {
-
-    }
 
     public <T> void  eat(ArrayList<T> animal){
         Object object = null;
@@ -221,11 +217,8 @@ public class Eagle extends Predator{
         if(this.satiety<0)stepDeath++;
         return newEagle;
     }
+
     @Override
-    public void move(Cell[][] cells) {
-
-    }
-
     public Eagle move(Cell[][] cells,int i,int j) {
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             int randomStepLength = ThreadLocalRandom.current().nextInt(4);
@@ -288,6 +281,11 @@ public class Eagle extends Predator{
             this.isMove = false;
         }
         return  null;
+    }
+
+    @Override
+    public void eat() {
+
     }
 
 }

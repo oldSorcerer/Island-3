@@ -88,10 +88,6 @@ public class Deer extends Herbivores {
             }
         }
     }
-    @Override
-    public void eat() {
-
-    }
 
     public void eat(List<Plant> plants){
         //есть 5 % от своего веса
@@ -131,10 +127,6 @@ public class Deer extends Herbivores {
         this.satiety-=3750;;
         if(this.satiety<0)stepDeath++;
         return newDeer;
-    }
-    @Override
-    public void move(Cell[][] cells) {
-
     }
 
     public Deer move(Cell[][] cells,int i,int j) {
@@ -201,5 +193,8 @@ public class Deer extends Herbivores {
         return  null;
     }
 
+    @Override
+    public void eat() {
 
+    }
 }

@@ -55,6 +55,7 @@ public abstract class Animal implements Eat, Move, Reproduce {
     public void setName(String name) {
         this.name = name;
     }
+
     public int getWeight() {
         return weight;
     }
@@ -70,6 +71,7 @@ public abstract class Animal implements Eat, Move, Reproduce {
     public void setStepDeath(int stepDeath) {
         this.stepDeath = stepDeath;
     }
+
     public int getSatiety() {
         return satiety;
     }

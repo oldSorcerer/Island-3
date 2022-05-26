@@ -1,5 +1,6 @@
 package entity.herbivores;
 
+import entity.Animal;
 import entity.Cell;
 import entity.Plant;
 
@@ -76,15 +77,7 @@ public class Caterpillar extends Herbivores {
             }
         }
     }
-    //гусеницы питаются в методее жизнь, потому что едят(400 гусениц съедают 1 растение
-    @Override
-    public void eat() {
-    }
 
-    @Override
-    public void move(Cell[][] cells ) {
-
-    }
     public void eat(Plant plant){
         if(plant.getWeight()>3 && this.isEat == false && this.isReproduce == false){
             plant.setWeight(plant.getWeight()-3);
@@ -94,8 +87,6 @@ public class Caterpillar extends Herbivores {
             this.isEat = false;
         }
     }
-//    public void reproduce(Cell[][] cells, int i, int j){
-//    }
 
     public ArrayList<Caterpillar> reproduce(Cell[][] cells, int i, int j) {
         ArrayList<Caterpillar> newCaterpillar = new ArrayList<>();
@@ -113,4 +104,12 @@ public class Caterpillar extends Herbivores {
         return newCaterpillar;
     }
 
+    @Override
+    public void eat() {
+    }
+
+    @Override
+    public Animal move(Cell[][] cells, int i, int j) {
+        return null;
+    }
 }

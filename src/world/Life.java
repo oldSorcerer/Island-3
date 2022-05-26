@@ -1,19 +1,13 @@
 package world;
 
-import com.sun.tools.javac.Main;
-import entity.Animal;
 import entity.Cell;
 import entity.Plant;
 import entity.herbivores.*;
-import entity.predator.Bear;
-import entity.predator.Eagle;
-import entity.predator.Fox;
-
-
+import entity.predator.*;
 
 public class Life {
 
-    public static void runLife(Cell[][] cells){
+    public static void runLife(Cell[][] cells, int step){
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
                 Caterpillar.life(cells,i,j);
@@ -29,23 +23,28 @@ public class Life {
                 Eagle.life(cells,i,j);
                 Bear.life(cells,i,j);
                 Fox.life(cells,i,j);
+                Boa.life(cells,i,j);
+                Wolf.life(cells,i,j);
                 System.out.println("["+(i+1)+", " +(j+1)+"] - "+ cells[i][j]);
             }
-            System.out.println("--------------------------------------------------------------------------------------------------------------------------------");
-            System.out.println("Plants:" + Plant.newPlants+"/"+Plant.deathPlants+
+            System.out.println("STEP: " + step);
+            System.out.println(
+                    "   Plants:" + Plant.newPlants+"/"+Plant.deathPlants+
                     "   Caterpillars:"+Caterpillar.newGaterpillar+"/"+Caterpillar.deathGaterpillar +
                     "   Duck:" + Duck.newDuck+"/"+Duck.deathDuck+
                     "   Buffalo:" + Buffalo.newBuffalo + "/" + Buffalo.deathBuffalo +
                     "   Boar:" + Boar.newBoar + "/" + Boar.deathBoar +
                     "   Sheep:" + Sheep.newSheep + "/" + Sheep.deathSheep +
                     "   Goat:" + Goat.newGoat + "/" + Goat.deathGoat +
-                    "   Mouse:" + Mouse.newMouse + "/" + Mouse.deathMouse +
+                    "   Mouse:" + Mouse.newMouse + "/" + Mouse.deathMouse + "\n" +
                     "   Rabbit:" + Rabbit.newRabbit + "/" + Rabbit.deathRabbit +
                     "   Deer:" + Deer.newDeer + "/" + Deer.deathDeer +
-                    "   Horse:" + Horse.newHorse + "/" + Horse.deathHorse + "\n" +
-                    "Eagle:" + Eagle.newEagle + "/" + Eagle.deathEagle +
+                    "   Horse:" + Horse.newHorse + "/" + Horse.deathHorse +
+                    "   Eagle:" + Eagle.newEagle + "/" + Eagle.deathEagle +
                     "   Bear:" +Bear.newBear + "/" + Bear.deathBear +
-                    "   Fox:" + Fox.newFox + "/" + Fox.deathFox);
+                    "   Fox:" + Fox.newFox + "/" + Fox.deathFox +
+                    "   Boa:" + Boa.newBoa + "/" + Boa.deathBoa +
+                    "   Wolf:" + Wolf.newWolf +"/" + Wolf.deathWolf);
         }
     }
 }

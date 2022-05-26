@@ -89,10 +89,6 @@ public class Horse extends Herbivores {
             }
         }
     }
-    @Override
-    public void eat() {
-
-    }
 
     public void eat(List<Plant> plants){
         //есть 5 % от своего веса
@@ -134,10 +130,6 @@ public class Horse extends Herbivores {
         return newHorse;
     }
     @Override
-    public void move(Cell[][] cells) {
-
-    }
-
     public Horse move(Cell[][] cells,int i,int j) {
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             int randomStepLength = ThreadLocalRandom.current().nextInt(5);
@@ -200,6 +192,11 @@ public class Horse extends Herbivores {
             this.isMove = false;
         }
         return  null;
+    }
+
+    @Override
+    public void eat() {
+
     }
 
 }

@@ -131,6 +131,7 @@ public class Buffalo extends Herbivores {
         return newBuffalo;
     }
 
+    @Override
     public Buffalo move(Cell[][] cells,int i,int j) {
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             int randomStepLength = ThreadLocalRandom.current().nextInt(4);
@@ -206,8 +207,4 @@ public class Buffalo extends Herbivores {
 
     }
 
-    @Override
-    public void move(Cell[][] cells) {
-
-    }
 }

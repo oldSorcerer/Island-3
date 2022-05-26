@@ -92,11 +92,6 @@ public class Sheep extends Herbivores {
         }
     }
 
-    @Override
-    public void eat() {
-
-    }
-
     public void eat(List<Plant> plants){
         //если он даже немного поел ставлю ему поленое насыщение иначе он вымирает
         if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
@@ -138,10 +133,6 @@ public class Sheep extends Herbivores {
     }
 
     @Override
-    public void move(Cell[][] cells) {
-
-    }
-
     public Sheep move(Cell[][] cells,int i,int j) {
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             int randomStepLength = ThreadLocalRandom.current().nextInt(4);
@@ -204,5 +195,10 @@ public class Sheep extends Herbivores {
             this.isMove = false;
         }
         return  null;
+    }
+
+    @Override
+    public void eat() {
+
     }
 }

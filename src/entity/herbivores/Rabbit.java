@@ -14,7 +14,6 @@ public class Rabbit extends Herbivores {
     public Rabbit() {
         weight = 2_000;
         stepDeath = 0;
-        stepDeath = 0;
         name = Integer.toString(newRabbit);
         satiety = 450;
         isEat = true;
@@ -87,17 +86,13 @@ public class Rabbit extends Herbivores {
             while (iterator.hasNext()){
                 Rabbit rabbit = iterator.next();
                 if(rabbit.stepDeath==2){
-                    //System.out.println("death of funger");
                     iterator.remove();
                     Rabbit.deathRabbit++;
                 }
             }
         }
     }
-    @Override
-    public void eat() {
 
-    }
     public void eat(Plant plant){
         if(plant.getWeight()>450 && this.isEat == false && this.isReproduce == false && this.isMove == false){
             plant.setWeight(plant.getWeight()-450);
@@ -130,10 +125,6 @@ public class Rabbit extends Herbivores {
     }
 
     @Override
-    public void move(Cell[][] cells) {
-
-    }
-
     public Rabbit move(Cell[][] cells,int i,int j) {
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             int randomStepLength = ThreadLocalRandom.current().nextInt(3);
@@ -198,4 +189,8 @@ public class Rabbit extends Herbivores {
         return  null;
     }
 
+    @Override
+    public void eat() {
+
+    }
 }

@@ -1,12 +1,10 @@
 package entity.predator;
 
 import entity.Cell;
-import entity.Plant;
 import entity.herbivores.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -111,7 +109,6 @@ public class Bear extends Predator{
 //
         int needToKill =0;
         Iterator<Bear> iterator = bears.iterator();
-        // уменьшаю количество кабанов с 50 до 10
         if(bears.size()>5){
             needToKill = Math.abs(bears.size()-5);
             while (needToKill>0){
@@ -130,13 +127,9 @@ public class Bear extends Predator{
             }
         }
     }
-    @Override
-    public void eat() {
 
-    }
     public <T> void  eat(ArrayList<T> animal){
         Object object = null;
-        //System.out.println("eat Animal");
         if(animal.size()>0){
             object = animal.get(0);
             if(object instanceof Duck){
@@ -356,6 +349,7 @@ public class Bear extends Predator{
             if(this.satiety<0)stepDeath++;
         }
     }
+
     @Override
     public ArrayList<Bear> reproduce(Cell[][] cells, int i, int j) {
         ArrayList<Bear> newBear= new ArrayList<>();
@@ -374,6 +368,7 @@ public class Bear extends Predator{
         return newBear;
     }
 
+    @Override
     public Bear move(Cell[][] cells,int i,int j) {
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             int randomStepLength = ThreadLocalRandom.current().nextInt(3);
@@ -439,7 +434,7 @@ public class Bear extends Predator{
     }
 
     @Override
-    public void move(Cell[][] cells) {
+    public void eat() {
 
     }
 }

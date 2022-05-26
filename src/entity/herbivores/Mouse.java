@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Mouse extends Herbivores {
-    public static final int MAX_DEATH = 3;
     public static int newMouse = 0;
     public static int deathMouse= 0;
     public Mouse() {
@@ -102,10 +101,6 @@ public class Mouse extends Herbivores {
         }
     }
 
-    @Override
-    public void eat() {
-
-    }
     public void eat(Plant plant){
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             plant.setWeight(plant.getWeight()-10);
@@ -160,6 +155,7 @@ public class Mouse extends Herbivores {
         return newMouse;
     }
 
+    @Override
     public Mouse move(Cell[][] cells,int i,int j) {
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             int randomStepLength = ThreadLocalRandom.current().nextInt(2);
@@ -225,8 +221,9 @@ public class Mouse extends Herbivores {
         }
         return  null;
     }
+
     @Override
-    public void move(Cell[][] cells) {
+    public void eat() {
 
     }
 }

@@ -2,7 +2,6 @@ package entity.herbivores;
 
 import entity.Cell;
 import entity.Plant;
-import world.LifeStep;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -157,6 +156,7 @@ public class Duck extends Herbivores {
         return newDuck;
     }
 
+    @Override
     public Duck move(Cell[][] cells,int i,int j) {
         if(this.isEat == false && this.isReproduce == false && this.isMove == false){
             int randomStepLength = ThreadLocalRandom.current().nextInt(5);
@@ -226,10 +226,6 @@ public class Duck extends Herbivores {
             this.isMove = false;
         }
         return  null;
-    }
-    @Override
-    public void move(Cell[][] cells) {
-
     }
 
     @Override
