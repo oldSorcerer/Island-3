@@ -53,7 +53,10 @@ public class Sheep extends Herbivores {
             Sheep sheep = sheeps.get(k);
             //кушаем
             List<Plant> plants = cells[i][j].getSynchronizedPlant();
-            sheep.eat(plants);
+            List<Plant> needToDeletePlant = sheep.eat(plants);
+            for (Plant plant :needToDeletePlant) {
+                plants.remove(plant);
+            }
 
             //размножаемся
             newSheep.addAll(sheep.reproduce(cells,i,j));
@@ -92,18 +95,24 @@ public class Sheep extends Herbivores {
         }
     }
 
-    public void eat(List<Plant> plants){
+    public List<Plant> eat(List<Plant> plants){
         //если он даже немного поел ставлю ему поленое насыщение иначе он вымирает
+        List<Plant> needToDelete = new ArrayList<>();
         if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
-            Iterator<Plant> iterator = plants.iterator();
             int needToEat = 15;
-            while (iterator.hasNext()){
-                iterator.next();
-                iterator.remove();
-                Plant.deathPlants++;
-                needToEat--;
-                if(needToEat ==0)break;
+            if(plants.size()>needToEat){
+                for (int i=0;i<needToEat;i++) {
+                    needToDelete.add(plants.get(i));
+                    Plant.deathPlants++;
+                }
             }
+//            while (iterator.hasNext()){
+//                iterator.next();
+//                iterator.remove();
+//                Plant.deathPlants++;
+//                needToEat--;
+//                if(needToEat ==0)break;
+//            }
             this.satiety=70_000;
             this.stepDeath =0;
             this.isEat = true;
@@ -112,6 +121,7 @@ public class Sheep extends Herbivores {
             this.satiety -= 23_400;
             if(this.satiety<0)stepDeath++;
         }
+        return needToDelete;
     }
 
     @Override

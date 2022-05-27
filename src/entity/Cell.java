@@ -6,6 +6,7 @@ import entity.predator.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Cell {
     public static final int MAX_WOLF = 30;
@@ -46,6 +47,7 @@ public class Cell {
     private ArrayList<Caterpillar> caterpillar = new ArrayList<>();
 
     private ArrayList<Plant> plant = new ArrayList<>();
+
     private List<Plant> synchronizedPlant = Collections.synchronizedList(plant);
 
 

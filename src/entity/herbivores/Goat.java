@@ -52,7 +52,10 @@ public class Goat extends Herbivores {
             Goat goat = goats.get(k);
             //кушаем
             List<Plant> plants = cells[i][j].getSynchronizedPlant();
-            goat.eat(plants);
+            List<Plant> needToDeletePlant = goat.eat(plants);
+            for (Plant plant :needToDeletePlant) {
+                plants.remove(plant);
+            }
 
             //размножаемся
             newGoat.addAll(goat.reproduce(cells,i,j));
@@ -91,17 +94,16 @@ public class Goat extends Herbivores {
         }
     }
 
-    public void eat(List<Plant> plants){
+    public List<Plant> eat(List<Plant> plants){
         //если он даже немного поел ставлю ему поленое насыщение иначе он вымирает
+        List<Plant> needToDelete = new ArrayList<>();
         if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
-            Iterator<Plant> iterator = plants.iterator();
             int needToEat = 10;
-            while (iterator.hasNext()){
-                iterator.next();
-                iterator.remove();
-                Plant.deathPlants++;
-                needToEat--;
-                if(needToEat ==0)break;
+            if(plants.size()>needToEat){
+                for (int i=0;i<needToEat;i++) {
+                    needToDelete.add(plants.get(i));
+                    Plant.deathPlants++;
+                }
             }
             this.satiety=60_000;
             this.stepDeath =0;
@@ -111,6 +113,7 @@ public class Goat extends Herbivores {
             this.satiety -= 12_050;
             if(this.satiety<0)stepDeath++;
         }
+        return needToDelete;
     }
 
     @Override

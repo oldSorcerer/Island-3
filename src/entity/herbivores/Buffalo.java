@@ -53,7 +53,10 @@ public class Buffalo extends Herbivores {
             Buffalo buffalo = buffaloes.get(k);
             //кушаем
             List<Plant> plants = cells[i][j].getSynchronizedPlant();
-            buffalo.eat(plants);
+            List<Plant> needToDeletePlant = buffalo.eat(plants);
+            for (Plant plant :needToDeletePlant) {
+                plants.remove(plant);
+            }
 
             //размножаемся
             newBuffalo.addAll(buffalo.reproduce(cells,i,j));
@@ -91,19 +94,25 @@ public class Buffalo extends Herbivores {
             }
         }
     }
-    public void eat(List<Plant> plants){
+    public List<Plant> eat(List<Plant> plants){
         //если он даже немного поел ставлю ему поленое насыщение иначе он вымирает
         //ест 5 % от массы
+        List<Plant> needToDelete = new ArrayList<>();
         if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
-            Iterator<Plant> iterator = plants.iterator();
             int needToEat = 35;
-            while (iterator.hasNext()){
-                iterator.next();
-                iterator.remove();
-                Plant.deathPlants++;
-                needToEat--;
-                if(needToEat ==0)break;
+            if(plants.size()>needToEat){
+                for (int i=0;i<needToEat;i++) {
+                    needToDelete.add(plants.get(i));
+                    Plant.deathPlants++;
+                }
             }
+//            while (iterator.hasNext()){
+//                iterator.next();
+//                iterator.remove();
+//                Plant.deathPlants++;
+//                needToEat--;
+//                if(needToEat ==0)break;
+//            }
             this.satiety=35_000;
             this.stepDeath =0;
             this.isEat = true;
@@ -112,6 +121,7 @@ public class Buffalo extends Herbivores {
             this.satiety-=11_700;
             if(this.satiety<0)stepDeath++;
         }
+        return needToDelete;
     }
     @Override
     public ArrayList<Buffalo> reproduce(Cell[][] cells, int i, int j) {

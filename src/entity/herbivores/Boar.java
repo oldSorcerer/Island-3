@@ -62,7 +62,10 @@ public class Boar extends Herbivores {
                 boar.eat(caterpillars);
             }else if(randomFood == 1){
                 List<Plant> plants = cells[i][j].getSynchronizedPlant();
-                boar.eat(plants);
+                List<Plant> needToDeletePlant = boar.eat(plants);
+                for (Plant plant :needToDeletePlant) {
+                    plants.remove(plant);
+                }
             }else if(randomFood == 2){
                 ArrayList<Mouse> Mouses = cells[i][j].getMouse();
                 boar.eat(Mouses);
@@ -104,22 +107,27 @@ public class Boar extends Herbivores {
         }
     }
 
-    public void eat(List<Plant> plants){
+    public List<Plant> eat(List<Plant> plants){
         //кабаны едят половина растений на карте, если он даже немного поел ставлю ему поленое насыщение иноже он вымирает
         //кабан есть 5 % от своего веса
+        List<Plant> needToDelete = new ArrayList<>();
         if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
-            Iterator<Plant> iterator = plants.iterator();
             int needToEat = 20;
-            while (iterator.hasNext()){
-                iterator.next();
-                iterator.remove();
-                Plant.deathPlants++;
-                needToEat--;
-                if(needToEat ==0)break;
+            if(plants.size()>needToEat){
+                for (int i=0;i<needToEat;i++) {
+                    needToDelete.add(plants.get(i));
+                    Plant.deathPlants++;
+                }
             }
+
+//            while (iterator.hasNext()){
+//                iterator.next();
+//                iterator.remove();
+//                Plant.deathPlants++;
+//                needToEat--;
+//                if(needToEat ==0)break;
+//            }
             this.satiety=20_000;
-
-
             this.stepDeath =0;
             this.isEat = true;
         }else{
@@ -127,6 +135,7 @@ public class Boar extends Herbivores {
             this.satiety-=10_000;
             if(this.satiety<0)stepDeath++;
         }
+        return needToDelete;
     }
 
     public <T> void  eat(ArrayList<T> animal){
