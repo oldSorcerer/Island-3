@@ -2,6 +2,7 @@ package entity.herbivores;
 
 import entity.Cell;
 import entity.Plant;
+import world.Properties;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,11 +14,12 @@ public class Sheep extends Herbivores {
     public static int newSheep = 0;
     public static int deathSheep = 0;
     private String name = new String();
+
     public Sheep() {
-        weight = 70_000;
+        weight = Properties.WEIGHT_SHEEP;
         stepDeath = 0;
         name = Integer.toString(newSheep);
-        satiety = 15_000;
+        satiety = Properties.SATIETY_SHEEP;
         isEat = true;
         isMove = false;
         isReproduce = false;
@@ -45,7 +47,7 @@ public class Sheep extends Herbivores {
                 '}';
     }
 
-    public static void life(Cell[][] cells, int i, int j){
+    public static void life(Cell[][] cells, int i, int j) {
         ArrayList<Sheep> sheeps = cells[i][j].getSheep();
         ArrayList<Sheep> newSheep = new ArrayList<>();
         ArrayList<Sheep> arrayListSheepNeedToDelete = new ArrayList<>();
@@ -54,40 +56,40 @@ public class Sheep extends Herbivores {
             //кушаем
             List<Plant> plants = cells[i][j].getSynchronizedPlant();
             List<Plant> needToDeletePlant = sheep.eat(plants);
-            for (Plant plant :needToDeletePlant) {
+            for (Plant plant : needToDeletePlant) {
                 plants.remove(plant);
             }
 
             //размножаемся
-            newSheep.addAll(sheep.reproduce(cells,i,j));
+            newSheep.addAll(sheep.reproduce(cells, i, j));
 
             //передвижение
-            Sheep sheepMove = sheep.move(cells,i,j);
-            if(sheepMove != null){
+            Sheep sheepMove = sheep.move(cells, i, j);
+            if (sheepMove != null) {
                 arrayListSheepNeedToDelete.add(sheepMove);
             }
 
         }
         sheeps.addAll(newSheep);
-        for (Sheep sheep: arrayListSheepNeedToDelete) {
+        for (Sheep sheep : arrayListSheepNeedToDelete) {
             sheeps.remove(sheep);
         }
 
         int needToKill = 0;
         Iterator<Sheep> iterator = sheeps.iterator();
 
-        if(sheeps.size()>140){
-            needToKill = Math.abs(sheeps.size()-140);
-            while (needToKill>0){
+        if (sheeps.size() > Properties.MAX_SHEEP) {
+            needToKill = Math.abs(sheeps.size() - Properties.MAX_SHEEP);
+            while (needToKill > 0) {
                 iterator.next();
                 iterator.remove();
                 Sheep.deathSheep++;
                 needToKill--;
             }
-        }else{
-            while (iterator.hasNext()){
+        } else {
+            while (iterator.hasNext()) {
                 Sheep sheep = iterator.next();
-                if(sheep.stepDeath==3){
+                if (sheep.stepDeath == 3) {
                     iterator.remove();
                     Sheep.deathSheep++;
                 }
@@ -95,13 +97,13 @@ public class Sheep extends Herbivores {
         }
     }
 
-    public List<Plant> eat(List<Plant> plants){
+    public List<Plant> eat(List<Plant> plants) {
         //если он даже немного поел ставлю ему поленое насыщение иначе он вымирает
         List<Plant> needToDelete = new ArrayList<>();
-        if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
+        if (this.isEat == false && this.isReproduce == false && this.isMove == false) {
             int needToEat = 15;
-            if(plants.size()>needToEat){
-                for (int i=0;i<needToEat;i++) {
+            if (plants.size() > needToEat) {
+                for (int i = 0; i < needToEat; i++) {
                     needToDelete.add(plants.get(i));
                     Plant.deathPlants++;
                 }
@@ -113,13 +115,13 @@ public class Sheep extends Herbivores {
 //                needToEat--;
 //                if(needToEat ==0)break;
 //            }
-            this.satiety=70_000;
-            this.stepDeath =0;
+            this.satiety = Properties.SATIETY_SHEEP;
+            this.stepDeath = 0;
             this.isEat = true;
-        }else{
+        } else {
             this.isEat = false;
-            this.satiety -= 23_400;
-            if(this.satiety<0)stepDeath++;
+            this.satiety -= Properties.SATIETY_STEP_TO_DEATH_SHEEP;
+            if (this.satiety < 0) stepDeath++;
         }
         return needToDelete;
     }
@@ -128,83 +130,83 @@ public class Sheep extends Herbivores {
     public ArrayList<Sheep> reproduce(Cell[][] cells, int i, int j) {
         ArrayList<Sheep> newSheep = new ArrayList<>();
         int randomLengthSheep = ThreadLocalRandom.current().nextInt(2);
-        if(this.isReproduce == false && this.isEat == false && this.isMove == false){
-            for (int k=0;k<randomLengthSheep;k++){
+        if (this.isReproduce == false && this.isEat == false && this.isMove == false) {
+            for (int k = 0; k < randomLengthSheep; k++) {
                 newSheep.add(new Sheep());
                 Sheep.newSheep++;
             }
-            this.isReproduce=true;
-        }else{
+            this.isReproduce = true;
+        } else {
             this.isReproduce = false;
         }
-        this.satiety -= 23_400;
-        if(this.satiety<0)stepDeath++;
+        this.satiety -= Properties.SATIETY_STEP_TO_DEATH_SHEEP;
+        if (this.satiety < 0) stepDeath++;
         return newSheep;
     }
 
     @Override
-    public Sheep move(Cell[][] cells,int i,int j) {
-        if(this.isEat == false && this.isReproduce == false && this.isMove == false){
+    public Sheep move(Cell[][] cells, int i, int j) {
+        if (this.isEat == false && this.isReproduce == false && this.isMove == false) {
             int randomStepLength = ThreadLocalRandom.current().nextInt(4);
             int randomWay = ThreadLocalRandom.current().nextInt(4);
-            this.isMove=true;
-            if(randomWay == 0){
+            this.isMove = true;
+            if (randomWay == 0) {
                 //west(left)
-                int iStepToLeft = j-randomStepLength;
-                if(iStepToLeft>=0){
-                    this.satiety-=23_400;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToLeft = j - randomStepLength;
+                if (iStepToLeft >= 0) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_SHEEP;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Sheep> MoveToOtherSheep = cells[i][iStepToLeft].getSheep();
                     MoveToOtherSheep.add(this);
                     return this;
-                }else{
+                } else {
                     Sheep.deathSheep++;
                     return this;
                 }
-            }else if(randomWay == 1){
+            } else if (randomWay == 1) {
                 //north(up)
-                int iStepToUp = i-randomStepLength;
-                if(iStepToUp>=0){
-                    this.satiety-=23_400;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToUp = i - randomStepLength;
+                if (iStepToUp >= 0) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_SHEEP;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Sheep> MoveToOtherSheep = cells[iStepToUp][j].getSheep();
                     MoveToOtherSheep.add(this);
                     return this;
-                }else{
+                } else {
                     Sheep.deathSheep++;
                     return this;
                 }
-            }else if(randomWay == 2){
+            } else if (randomWay == 2) {
                 //east(right)
-                int iStepToRight = j+randomStepLength;
-                if(iStepToRight<cells[0].length){
-                    this.satiety-=23_400;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToRight = j + randomStepLength;
+                if (iStepToRight < cells[0].length) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_SHEEP;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Sheep> MoveToOtherSheep = cells[i][iStepToRight].getSheep();
                     MoveToOtherSheep.add(this);
                     return this;
-                }else{
+                } else {
                     Sheep.deathSheep++;
                     return this;
                 }
-            }else if(randomWay == 3){
+            } else if (randomWay == 3) {
                 //south(down)
-                int iStepToDown = i+randomStepLength;
-                if(iStepToDown<cells.length){
-                    this.satiety-=23_400;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToDown = i + randomStepLength;
+                if (iStepToDown < cells.length) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_SHEEP;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Sheep> MoveToOtherSheep = cells[iStepToDown][j].getSheep();
                     MoveToOtherSheep.add(this);
                     return this;
-                }else{
+                } else {
                     Sheep.deathSheep++;
                     return this;
                 }
             }
-        }else{
+        } else {
             this.isMove = false;
         }
-        return  null;
+        return null;
     }
 
     @Override

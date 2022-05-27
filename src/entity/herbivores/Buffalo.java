@@ -2,6 +2,7 @@ package entity.herbivores;
 
 import entity.Cell;
 import entity.Plant;
+import world.Properties;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,10 +15,10 @@ public class Buffalo extends Herbivores {
     public static int deathBuffalo = 0;
 
     public Buffalo() {
-        weight = 700_000;
+        weight = Properties.WEIGHT_BUFFALO;
         stepDeath = 0;
         name = Integer.toString(newBuffalo);
-        satiety = 35_000;
+        satiety = Properties.SATIETY_BUFFALO;
         isEat = false;
         isMove = false;
         isReproduce = false;
@@ -45,7 +46,7 @@ public class Buffalo extends Herbivores {
                 '}';
     }
 
-    public static void life(Cell[][] cells, int i, int j){
+    public static void life(Cell[][] cells, int i, int j) {
         ArrayList<Buffalo> buffaloes = cells[i][j].getBuffalo();
         ArrayList<Buffalo> newBuffalo = new ArrayList<>();
         ArrayList<Buffalo> arrayListBuffaloNeedToDelete = new ArrayList<>();
@@ -54,54 +55,55 @@ public class Buffalo extends Herbivores {
             //кушаем
             List<Plant> plants = cells[i][j].getSynchronizedPlant();
             List<Plant> needToDeletePlant = buffalo.eat(plants);
-            for (Plant plant :needToDeletePlant) {
+            for (Plant plant : needToDeletePlant) {
                 plants.remove(plant);
             }
 
             //размножаемся
-            newBuffalo.addAll(buffalo.reproduce(cells,i,j));
+            newBuffalo.addAll(buffalo.reproduce(cells, i, j));
 
             //передвижение
-            Buffalo buffaloMove = buffalo.move(cells,i,j);
-            if(buffaloMove != null){
+            Buffalo buffaloMove = buffalo.move(cells, i, j);
+            if (buffaloMove != null) {
                 arrayListBuffaloNeedToDelete.add(buffaloMove);
             }
 
         }
         buffaloes.addAll(newBuffalo);
-        for (Buffalo buffalo: arrayListBuffaloNeedToDelete) {
+        for (Buffalo buffalo : arrayListBuffaloNeedToDelete) {
             buffaloes.remove(buffalo);
         }
 
         int needToKill = 0;
         Iterator<Buffalo> iterator = buffaloes.iterator();
 
-        if(buffaloes.size()>10){
-            needToKill = Math.abs(buffaloes.size()-10);
-            while (needToKill>0){
+        if (buffaloes.size() > Properties.MAX_BUFFALO) {
+            needToKill = Math.abs(buffaloes.size() - Properties.MAX_BUFFALO);
+            while (needToKill > 0) {
                 iterator.next();
                 iterator.remove();
                 Buffalo.deathBuffalo++;
                 needToKill--;
             }
-        }else{
-            while (iterator.hasNext()){
+        } else {
+            while (iterator.hasNext()) {
                 Buffalo buffalo = iterator.next();
-                if(buffalo.stepDeath==3){
+                if (buffalo.stepDeath == 3) {
                     iterator.remove();
                     Buffalo.deathBuffalo++;
                 }
             }
         }
     }
-    public List<Plant> eat(List<Plant> plants){
+
+    public List<Plant> eat(List<Plant> plants) {
         //если он даже немного поел ставлю ему поленое насыщение иначе он вымирает
         //ест 5 % от массы
         List<Plant> needToDelete = new ArrayList<>();
-        if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
+        if (this.isEat == false && this.isReproduce == false && this.isMove == false) {
             int needToEat = 35;
-            if(plants.size()>needToEat){
-                for (int i=0;i<needToEat;i++) {
+            if (plants.size() > needToEat) {
+                for (int i = 0; i < needToEat; i++) {
                     needToDelete.add(plants.get(i));
                     Plant.deathPlants++;
                 }
@@ -113,105 +115,107 @@ public class Buffalo extends Herbivores {
 //                needToEat--;
 //                if(needToEat ==0)break;
 //            }
-            this.satiety=35_000;
-            this.stepDeath =0;
+            this.satiety = Properties.SATIETY_BUFFALO;
+            this.stepDeath = 0;
             this.isEat = true;
-        }else{
+        } else {
             this.isEat = false;
-            this.satiety-=11_700;
-            if(this.satiety<0)stepDeath++;
+            this.satiety -= Properties.SATIETY_STEP_TO_DEATH_BUFFALO;
+            if (this.satiety < 0) stepDeath++;
         }
         return needToDelete;
     }
+
     @Override
     public ArrayList<Buffalo> reproduce(Cell[][] cells, int i, int j) {
         ArrayList<Buffalo> newBuffalo = new ArrayList<>();
         int randomLengthCaterpillar = ThreadLocalRandom.current().nextInt(2);
-        if(this.isReproduce == false && this.isEat == false && this.isMove == false){
-            for (int k=0;k<randomLengthCaterpillar;k++){
+        if (this.isReproduce == false && this.isEat == false && this.isMove == false) {
+            for (int k = 0; k < randomLengthCaterpillar; k++) {
                 newBuffalo.add(new Buffalo());
                 Buffalo.newBuffalo++;
             }
-            this.isReproduce=true;
-        }else{
+            this.isReproduce = true;
+        } else {
             this.isReproduce = false;
         }
-        this.satiety-=11_700;
-        if(this.satiety<0)stepDeath++;
+        this.satiety -= Properties.SATIETY_STEP_TO_DEATH_BUFFALO;
+        if (this.satiety < 0) stepDeath++;
         return newBuffalo;
     }
 
     @Override
-    public Buffalo move(Cell[][] cells,int i,int j) {
-        if(this.isEat == false && this.isReproduce == false && this.isMove == false){
+    public Buffalo move(Cell[][] cells, int i, int j) {
+        if (this.isEat == false && this.isReproduce == false && this.isMove == false) {
             int randomStepLength = ThreadLocalRandom.current().nextInt(4);
             int randomWay = ThreadLocalRandom.current().nextInt(4);
-            this.isMove=true;
-            if(randomWay == 0){
+            this.isMove = true;
+            if (randomWay == 0) {
                 //west(left)
-                int iStepToLeft = j-randomStepLength;
-                if(iStepToLeft>=0){
-                    this.satiety-=11_700;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToLeft = j - randomStepLength;
+                if (iStepToLeft >= 0) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_BUFFALO;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Buffalo> MoveToOtherBuffalo = cells[i][iStepToLeft].getBuffalo();
                     MoveToOtherBuffalo.add(this);
                     return this;
-                }else{
+                } else {
                     Buffalo.deathBuffalo++;
                     return this;
                 }
-            }else if(randomWay == 1){
+            } else if (randomWay == 1) {
                 //north(up)
-                int iStepToUp = i-randomStepLength;
-                if(iStepToUp>=0){
-                    this.satiety-=11_700;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToUp = i - randomStepLength;
+                if (iStepToUp >= 0) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_BUFFALO;
+                    if (this.satiety < 0) stepDeath++;
 
                     ArrayList<Buffalo> MoveToOtherBuffalo = cells[iStepToUp][j].getBuffalo();
                     MoveToOtherBuffalo.add(this);
 
                     return this;
-                }else{
+                } else {
 
                     Buffalo.deathBuffalo++;
                     return this;
                 }
-            }else if(randomWay == 2){
+            } else if (randomWay == 2) {
                 //east(right)
-                int iStepToRight = j+randomStepLength;
-                if(iStepToRight<cells[0].length){
-                    this.satiety-=11_700;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToRight = j + randomStepLength;
+                if (iStepToRight < cells[0].length) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_BUFFALO;
+                    if (this.satiety < 0) stepDeath++;
 
                     ArrayList<Buffalo> MoveToOtherBuffalo = cells[i][iStepToRight].getBuffalo();
                     MoveToOtherBuffalo.add(this);
 
                     return this;
-                }else{
+                } else {
 
                     Buffalo.deathBuffalo++;
                     return this;
                 }
-            }else if(randomWay == 3){
+            } else if (randomWay == 3) {
                 //south(down)
-                int iStepToDown = i+randomStepLength;
-                if(iStepToDown<cells.length){
-                    this.satiety-=11_700;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToDown = i + randomStepLength;
+                if (iStepToDown < cells.length) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_BUFFALO;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Buffalo> MoveToOtherBuffalo = cells[iStepToDown][j].getBuffalo();
                     MoveToOtherBuffalo.add(this);
                     return this;
-                }else{
+                } else {
 
                     Buffalo.deathBuffalo++;
                     return this;
                 }
             }
-        }else{
+        } else {
             this.isMove = false;
         }
-        return  null;
+        return null;
     }
+
     @Override
     public void eat() {
 

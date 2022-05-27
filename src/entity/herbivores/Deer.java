@@ -2,6 +2,7 @@ package entity.herbivores;
 
 import entity.Cell;
 import entity.Plant;
+import world.Properties;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,13 +11,14 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Deer extends Herbivores {
-    public static int newDeer= 0;
+    public static int newDeer = 0;
     public static int deathDeer = 0;
+
     public Deer() {
-        weight = 300_000;
+        weight = Properties.WEIGHT_DEER;
         stepDeath = 0;
         name = Integer.toString(newDeer);
-        satiety = 15_000;
+        satiety = Properties.SATIETY_DEER;
         isEat = true;
         isMove = false;
         isReproduce = false;
@@ -43,7 +45,7 @@ public class Deer extends Herbivores {
                 '}';
     }
 
-    public static void life(Cell[][] cells, int i, int j){
+    public static void life(Cell[][] cells, int i, int j) {
         ArrayList<Deer> deers = cells[i][j].getDeer();
         ArrayList<Deer> newDeer = new ArrayList<>();
         ArrayList<Deer> arrayListDeerNeedToDelete = new ArrayList<>();
@@ -52,39 +54,39 @@ public class Deer extends Herbivores {
             //кушаем
             List<Plant> plants = cells[i][j].getSynchronizedPlant();
             List<Plant> needToDeletePlant = deer.eat(plants);
-            for (Plant plant :needToDeletePlant) {
+            for (Plant plant : needToDeletePlant) {
                 plants.remove(plant);
             }
 
             //размножаемся
-            newDeer.addAll(deer.reproduce(cells,i,j));
+            newDeer.addAll(deer.reproduce(cells, i, j));
 
             //передвижение
-            Deer deerMove = deer.move(cells,i,j);
-            if(deerMove != null){
+            Deer deerMove = deer.move(cells, i, j);
+            if (deerMove != null) {
                 arrayListDeerNeedToDelete.add(deerMove);
             }
         }
         deers.addAll(newDeer);
-        for (Deer deer: arrayListDeerNeedToDelete) {
+        for (Deer deer : arrayListDeerNeedToDelete) {
             deers.remove(deer);
         }
 
         int needToKill = 0;
         Iterator<Deer> iterator = deers.iterator();
 
-        if(deers.size()>20){
-            needToKill = Math.abs(deers.size()-20);
-            while (needToKill>0){
+        if (deers.size() > Properties.MAX_DEER) {
+            needToKill = Math.abs(deers.size() - Properties.MAX_DEER);
+            while (needToKill > 0) {
                 iterator.next();
                 iterator.remove();
                 Deer.deathDeer++;
                 needToKill--;
             }
-        }else{
-            while (iterator.hasNext()){
-                Deer deer= iterator.next();
-                if(deer.stepDeath==4){
+        } else {
+            while (iterator.hasNext()) {
+                Deer deer = iterator.next();
+                if (deer.stepDeath == 4) {
                     iterator.remove();
                     Deer.deathDeer++;
                 }
@@ -92,13 +94,13 @@ public class Deer extends Herbivores {
         }
     }
 
-    public List<Plant> eat(List<Plant> plants){
+    public List<Plant> eat(List<Plant> plants) {
         //есть 5 % от своего веса
         List<Plant> needToDelete = new ArrayList<>();
-        if(this.isEat == false && this.isReproduce == false  && this.isMove == false) {
+        if (this.isEat == false && this.isReproduce == false && this.isMove == false) {
             int needToEat = 15;
-            if(plants.size()>needToEat){
-                for (int i=0;i<needToEat;i++) {
+            if (plants.size() > needToEat) {
+                for (int i = 0; i < needToEat; i++) {
                     needToDelete.add(plants.get(i));
                     Plant.deathPlants++;
                 }
@@ -110,97 +112,98 @@ public class Deer extends Herbivores {
 //                needToEat--;
 //                if(needToEat ==0)break;
 //            }
-            this.satiety = 15_000;
+            this.satiety = Properties.SATIETY_DEER;
             this.stepDeath = 0;
             this.isEat = true;
-        }else{
+        } else {
             this.isEat = false;
-            this.satiety -= 3750;
-            if(this.satiety<0)stepDeath++;
+            this.satiety -= Properties.SATIETY_STEP_TO_DEATH_DEER;
+            if (this.satiety < 0) stepDeath++;
         }
         return needToDelete;
     }
 
     @Override
     public ArrayList<Deer> reproduce(Cell[][] cells, int i, int j) {
-        ArrayList<Deer> newDeer= new ArrayList<>();
+        ArrayList<Deer> newDeer = new ArrayList<>();
         int randomLengthDeer = ThreadLocalRandom.current().nextInt(2);
-        if(this.isReproduce == false && this.isEat == false && this.isMove == false){
-            for (int k=0;k<randomLengthDeer;k++){
+        if (this.isReproduce == false && this.isEat == false && this.isMove == false) {
+            for (int k = 0; k < randomLengthDeer; k++) {
                 newDeer.add(new Deer());
                 Deer.newDeer++;
             }
-            this.isReproduce=true;
-        }else{
+            this.isReproduce = true;
+        } else {
             this.isReproduce = false;
         }
-        this.satiety-=3750;;
-        if(this.satiety<0)stepDeath++;
+        this.satiety -= 3750;
+        ;
+        if (this.satiety < 0) stepDeath++;
         return newDeer;
     }
 
-    public Deer move(Cell[][] cells,int i,int j) {
-        if(this.isEat == false && this.isReproduce == false && this.isMove == false){
+    public Deer move(Cell[][] cells, int i, int j) {
+        if (this.isEat == false && this.isReproduce == false && this.isMove == false) {
             int randomStepLength = ThreadLocalRandom.current().nextInt(5);
             int randomWay = ThreadLocalRandom.current().nextInt(4);
-            this.isMove=true;
-            if(randomWay == 0){
+            this.isMove = true;
+            if (randomWay == 0) {
                 //west(left)
-                int iStepToLeft = j-randomStepLength;
-                if(iStepToLeft>=0){
-                    this.satiety-=3750;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToLeft = j - randomStepLength;
+                if (iStepToLeft >= 0) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_DEER;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Deer> MoveToOtherDeer = cells[i][iStepToLeft].getDeer();
                     MoveToOtherDeer.add(this);
                     return this;
-                }else{
+                } else {
                     Deer.deathDeer++;
                     return this;
                 }
-            }else if(randomWay == 1){
+            } else if (randomWay == 1) {
                 //north(up)
-                int iStepToUp = i-randomStepLength;
-                if(iStepToUp>=0){
-                    this.satiety -= 3750;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToUp = i - randomStepLength;
+                if (iStepToUp >= 0) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_DEER;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Deer> MoveToOtherDeer = cells[iStepToUp][j].getDeer();
                     MoveToOtherDeer.add(this);
                     return this;
-                }else{
+                } else {
                     Deer.deathDeer++;
                     return this;
                 }
-            }else if(randomWay == 2){
+            } else if (randomWay == 2) {
                 //east(right)
-                int iStepToRight = j+randomStepLength;
-                if(iStepToRight<cells[0].length){
-                    this.satiety -= 3750;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToRight = j + randomStepLength;
+                if (iStepToRight < cells[0].length) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_DEER;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Deer> MoveToOtherDeer = cells[i][iStepToRight].getDeer();
                     MoveToOtherDeer.add(this);
                     return this;
-                }else{
+                } else {
                     Deer.deathDeer++;
                     return this;
                 }
-            }else if(randomWay == 3){
+            } else if (randomWay == 3) {
                 //south(down)
-                int iStepToDown = i+randomStepLength;
-                if(iStepToDown<cells.length){
-                    this.satiety -= 3750;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToDown = i + randomStepLength;
+                if (iStepToDown < cells.length) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_DEER;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Deer> MoveToOtherDeer = cells[iStepToDown][j].getDeer();
                     MoveToOtherDeer.add(this);
                     return this;
-                }else{
+                } else {
                     Deer.deathDeer++;
                     return this;
                 }
             }
-        }else{
+        } else {
             this.isMove = false;
         }
-        return  null;
+        return null;
     }
 
     @Override

@@ -2,6 +2,7 @@ package entity.herbivores;
 
 import entity.Cell;
 import entity.Plant;
+import world.Properties;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,16 +11,18 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Mouse extends Herbivores {
     public static int newMouse = 0;
-    public static int deathMouse= 0;
+    public static int deathMouse = 0;
+
     public Mouse() {
-        weight = 50;
+        weight = Properties.WEIGHT_MOUSE;
         stepDeath = 0;
         name = Integer.toString(newMouse);
-        satiety = 10;
+        satiety = Properties.SATIETY_MOUSE;
         isEat = false;
         isMove = false;
         isReproduce = false;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -42,7 +45,7 @@ public class Mouse extends Herbivores {
                 '}';
     }
 
-    public static void life(Cell[][] cells, int i, int j){
+    public static void life(Cell[][] cells, int i, int j) {
         ArrayList<Mouse> mouses = cells[i][j].getMouse();
         ArrayList<Mouse> newMouse = new ArrayList<>();
         ArrayList<Mouse> arrayListMouseNeedToDelete = new ArrayList<>();
@@ -53,47 +56,47 @@ public class Mouse extends Herbivores {
             //0-caterpillar
             //1-plant
             int randomFood = ThreadLocalRandom.current().nextInt(2);
-            if(randomFood == 0){
+            if (randomFood == 0) {
                 ArrayList<Caterpillar> caterpillars = cells[i][j].getCaterpillar();
                 mouse.eat(caterpillars);
-            }else{
+            } else {
                 Plant plant = null;
-                if(cells[i][j].getSynchronizedPlant().size()>0){
+                if (cells[i][j].getSynchronizedPlant().size() > 0) {
                     plant = cells[i][j].getSynchronizedPlant().get(0);
                     mouse.eat(plant);
                 }
             }
 
             //размножаемся
-            newMouse.addAll(mouse.reproduce(cells,i,j));
+            newMouse.addAll(mouse.reproduce(cells, i, j));
 
             //передвижение
-            Mouse mouseMove = mouse.move(cells,i,j);
-            if(mouseMove != null){
+            Mouse mouseMove = mouse.move(cells, i, j);
+            if (mouseMove != null) {
                 arrayListMouseNeedToDelete.add(mouseMove);
             }
 
         }
         mouses.addAll(newMouse);
-        for (Mouse mouse: arrayListMouseNeedToDelete) {
+        for (Mouse mouse : arrayListMouseNeedToDelete) {
             mouses.remove(mouse);
         }
 
-        int needToKill =0;
+        int needToKill = 0;
         Iterator<Mouse> iterator = mouses.iterator();
 
-        if(mouses.size()>500){
-            needToKill = Math.abs(mouses.size()-500);
-            while (needToKill>0){
+        if (mouses.size() > Properties.MAX_MOUSE) {
+            needToKill = Math.abs(mouses.size() - Properties.MAX_MOUSE);
+            while (needToKill > 0) {
                 iterator.next();
                 iterator.remove();
                 Mouse.deathMouse++;
                 needToKill--;
             }
-        }else{
-            while (iterator.hasNext()){
+        } else {
+            while (iterator.hasNext()) {
                 Mouse mouse = iterator.next();
-                if(mouse.stepDeath==1){
+                if (mouse.stepDeath == 1) {
                     iterator.remove();
                     Mouse.deathMouse++;
                 }
@@ -101,125 +104,125 @@ public class Mouse extends Herbivores {
         }
     }
 
-    public void eat(Plant plant){
-        if(this.isEat == false && this.isReproduce == false && this.isMove == false){
-            plant.setWeight(plant.getWeight()-10);
-            this.satiety=10;
-            this.stepDeath =0;
+    public void eat(Plant plant) {
+        if (this.isEat == false && this.isReproduce == false && this.isMove == false) {
+            plant.setWeight(plant.getWeight() - 10);
+            this.satiety = Properties.SATIETY_MOUSE;
+            this.stepDeath = 0;
             this.isEat = true;
-        }else {
+        } else {
             this.isEat = false;
-            this.satiety-=4;
-            if(this.satiety<0)stepDeath++;
+            this.satiety -= Properties.SATIETY_STEP_TO_DEATH_WEIGHT_MOUSE;
+            if (this.satiety < 0) stepDeath++;
         }
     }
 
-    public void eat(ArrayList<Caterpillar> caterpillars){
+    public void eat(ArrayList<Caterpillar> caterpillars) {
         int chanceToEat = ThreadLocalRandom.current().nextInt(100);
         chanceToEat++;
-        if(this.isEat == false && this.isReproduce == false && (chanceToEat<90) && this.isMove == false) {
+        if (this.isEat == false && this.isReproduce == false && (chanceToEat < 90) && this.isMove == false) {
             Iterator<Caterpillar> iterator = caterpillars.iterator();
             int needToEat = 1;
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 iterator.next();
                 iterator.remove();
                 Caterpillar.deathGaterpillar++;
                 needToEat--;
-                if(needToEat ==0)break;
+                if (needToEat == 0) break;
             }
-            this.satiety=10;
-            this.stepDeath =0;
+            this.satiety = Properties.SATIETY_MOUSE;
+            this.stepDeath = 0;
             this.isEat = true;
-        }else{
+        } else {
             this.isEat = false;
-            this.satiety-= 4;
-            if(this.satiety<0)stepDeath++;
+            this.satiety -= Properties.SATIETY_STEP_TO_DEATH_WEIGHT_MOUSE;
+            if (this.satiety < 0) stepDeath++;
         }
     }
 
     @Override
     public ArrayList<Mouse> reproduce(Cell[][] cells, int i, int j) {
-        ArrayList<Mouse> newMouse= new ArrayList<>();
+        ArrayList<Mouse> newMouse = new ArrayList<>();
         int randomLengthCaterpillar = ThreadLocalRandom.current().nextInt(8);
-        if(this.isReproduce == false && this.isEat == false && this.isMove == false){
-            for (int k=0;k<randomLengthCaterpillar;k++){
+        if (this.isReproduce == false && this.isEat == false && this.isMove == false) {
+            for (int k = 0; k < randomLengthCaterpillar; k++) {
                 newMouse.add(new Mouse());
                 Mouse.newMouse++;
             }
-            this.isReproduce=true;
-        }else{
+            this.isReproduce = true;
+        } else {
             this.isReproduce = false;
         }
-        this.satiety-=4;
-        if(this.satiety<0)stepDeath++;
+        this.satiety -= 4;
+        if (this.satiety < 0) stepDeath++;
         return newMouse;
     }
 
     @Override
-    public Mouse move(Cell[][] cells,int i,int j) {
-        if(this.isEat == false && this.isReproduce == false && this.isMove == false){
+    public Mouse move(Cell[][] cells, int i, int j) {
+        if (this.isEat == false && this.isReproduce == false && this.isMove == false) {
             int randomStepLength = ThreadLocalRandom.current().nextInt(2);
             int randomWay = ThreadLocalRandom.current().nextInt(4);
-            this.isMove=true;
-            if(randomWay == 0){
+            this.isMove = true;
+            if (randomWay == 0) {
                 //west(left)
-                int iStepToLeft = j-randomStepLength;
-                if(iStepToLeft>=0){
-                    this.satiety-=4;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToLeft = j - randomStepLength;
+                if (iStepToLeft >= 0) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_WEIGHT_MOUSE;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Mouse> MoveToOtherMouse = cells[i][iStepToLeft].getMouse();
                     MoveToOtherMouse.add(this);
                     return this;
-                }else{
+                } else {
                     Mouse.deathMouse++;
                     return this;
                 }
-            }else if(randomWay == 1){
+            } else if (randomWay == 1) {
                 //north(up)
-                int iStepToUp = i-randomStepLength;
-                if(iStepToUp>=0){
-                    this.satiety-=38;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToUp = i - randomStepLength;
+                if (iStepToUp >= 0) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_WEIGHT_MOUSE;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Mouse> MoveToOtherMouse = cells[iStepToUp][j].getMouse();
                     MoveToOtherMouse.add(this);
                     return this;
-                }else{
+                } else {
                     Mouse.deathMouse++;
                     return this;
                 }
-            }else if(randomWay == 2){
+            } else if (randomWay == 2) {
                 //east(right)
-                int iStepToRight = j+randomStepLength;
-                if(iStepToRight<cells[0].length){
-                    this.satiety-=38;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToRight = j + randomStepLength;
+                if (iStepToRight < cells[0].length) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_WEIGHT_MOUSE;
+                    if (this.satiety < 0) stepDeath++;
 
                     ArrayList<Mouse> MoveToOtherMouse = cells[i][iStepToRight].getMouse();
                     MoveToOtherMouse.add(this);
 
                     return this;
-                }else{
+                } else {
                     Mouse.deathMouse++;
                     return this;
                 }
-            }else if(randomWay == 3){
+            } else if (randomWay == 3) {
                 //south(down)
-                int iStepToDown = i+randomStepLength;
-                if(iStepToDown<cells.length){
-                    this.satiety-=38;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToDown = i + randomStepLength;
+                if (iStepToDown < cells.length) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_WEIGHT_MOUSE;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Mouse> MoveToOtherMouse = cells[iStepToDown][j].getMouse();
                     MoveToOtherMouse.add(this);
                     return this;
-                }else{
+                } else {
                     Mouse.deathMouse++;
                     return this;
                 }
             }
-        }else{
+        } else {
             this.isMove = false;
         }
-        return  null;
+        return null;
     }
 
     @Override

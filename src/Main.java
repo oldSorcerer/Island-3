@@ -19,7 +19,7 @@ public class Main {
         //begin world life----------------------------------------------------------------------------------------------
 
         int step = 0;
-        while(step <20){
+        while (step < 20) {
             Thread.sleep(1000);
             Life.runLife(cells, step);
             step++;

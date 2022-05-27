@@ -2,20 +2,22 @@ package entity.predator;
 
 import entity.Cell;
 import entity.herbivores.*;
+import world.Properties;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Eagle extends Predator{
+public class Eagle extends Predator {
     public static int newEagle = 0;
     public static int deathEagle = 0;
+
     public Eagle() {
-        weight = 6_000;
+        weight = Properties.WEIGHT_EAGLE;
         stepDeath = 0;
         name = Integer.toString(newEagle);
-        satiety = 1_000;
+        satiety = Properties.SATIETY_EAGLE;
         isEat = true;
         isMove = false;
         isReproduce = false;
@@ -28,6 +30,7 @@ public class Eagle extends Predator{
         Eagle eagle = (Eagle) o;
         return Objects.equals(name, eagle.name);
     }
+
     @Override
     public int hashCode() {
         return Objects.hash(name);
@@ -42,7 +45,7 @@ public class Eagle extends Predator{
                 '}';
     }
 
-    public static void life(Cell[][] cells, int i, int j){
+    public static void life(Cell[][] cells, int i, int j) {
         ArrayList<Eagle> eagles = cells[i][j].getEagle();
         ArrayList<Eagle> newEagle = new ArrayList<>();
         ArrayList<Eagle> arrayListEagleNeedToDelete = new ArrayList<>();
@@ -54,48 +57,48 @@ public class Eagle extends Predator{
             //2-rabbit
             //3-fox
             int randomFood = ThreadLocalRandom.current().nextInt(3);
-            if(randomFood == 0){
+            if (randomFood == 0) {
                 ArrayList<Duck> ducks = cells[i][j].getDuck();
                 eagle.eat(ducks);
-            }else if(randomFood == 1){
+            } else if (randomFood == 1) {
                 ArrayList<Mouse> mouses = cells[i][j].getMouse();
                 eagle.eat(mouses);
-            }else if(randomFood == 2){
+            } else if (randomFood == 2) {
                 ArrayList<Rabbit> rabbits = cells[i][j].getRabbit();
                 eagle.eat(rabbits);
-            }else if(randomFood == 3){
+            } else if (randomFood == 3) {
                 ArrayList<Fox> foxes = cells[i][j].getFox();
                 eagle.eat(foxes);
             }
             //размножаемся
-            newEagle.addAll(eagle.reproduce(cells,i,j));
+            newEagle.addAll(eagle.reproduce(cells, i, j));
 //
             //передвижение
-            Eagle eagleMove = eagle.move(cells,i,j);
-            if(eagleMove != null){
+            Eagle eagleMove = eagle.move(cells, i, j);
+            if (eagleMove != null) {
                 arrayListEagleNeedToDelete.add(eagleMove);
             }
 //
         }
         eagles.addAll(newEagle);
-        for (Eagle eagle: arrayListEagleNeedToDelete) {
+        for (Eagle eagle : arrayListEagleNeedToDelete) {
             eagles.remove(eagle);
         }
 //
-        int needToKill =0;
+        int needToKill = 0;
         Iterator<Eagle> iterator = eagles.iterator();
-        if(eagles.size()>20){
-            needToKill = Math.abs(eagles.size()-20);
-            while (needToKill>0){
+        if (eagles.size() > Properties.MAX_EAGLE) {
+            needToKill = Math.abs(eagles.size() - Properties.MAX_EAGLE);
+            while (needToKill > 0) {
                 iterator.next();
                 iterator.remove();
                 Eagle.deathEagle++;
                 needToKill--;
             }
-        }else{
-            while (iterator.hasNext()){
+        } else {
+            while (iterator.hasNext()) {
                 Eagle eagle = iterator.next();
-                if(eagle.stepDeath==3){
+                if (eagle.stepDeath == 3) {
                     iterator.remove();
                     Eagle.deathEagle++;
                 }
@@ -103,184 +106,185 @@ public class Eagle extends Predator{
         }
     }
 
-    public <T> void  eat(ArrayList<T> animal){
+    public <T> void eat(ArrayList<T> animal) {
         Object object = null;
         //System.out.println("eat Animal");
-        if(animal.size()>0){
+        if (animal.size() > 0) {
             object = animal.get(0);
-            if(object instanceof Duck){
+            if (object instanceof Duck) {
                 int chanceToEat = ThreadLocalRandom.current().nextInt(100);
                 chanceToEat++;
-                if(this.isEat == false && this.isReproduce == false  && this.isMove == false && (chanceToEat<80)) {
+                if (this.isEat == false && this.isReproduce == false && this.isMove == false && (chanceToEat < 80)) {
                     Iterator<T> iterator = animal.iterator();
                     int needToEat = 1;
-                    while (iterator.hasNext()){
+                    while (iterator.hasNext()) {
                         iterator.next();
                         iterator.remove();
                         Duck.deathDuck++;
                         needToEat--;
-                        if(needToEat ==0)break;
+                        if (needToEat == 0) break;
                     }
-                    this.satiety = 1_000;
+                    this.satiety = Properties.SATIETY_EAGLE;
                     this.stepDeath = 0;
                     this.isEat = true;
-                }else{
+                } else {
                     this.isEat = false;
-                    this.satiety -= 350;
-                    if(this.satiety<0)stepDeath++;
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_EAGLE;
+                    if (this.satiety < 0) stepDeath++;
                 }
-            }else if(object instanceof Mouse){
+            } else if (object instanceof Mouse) {
                 int chanceToEat = ThreadLocalRandom.current().nextInt(100);
                 int needToEat = 20;
                 chanceToEat++;
-                if(this.isEat == false && this.isReproduce == false  && this.isMove == false && (chanceToEat<90)) {
+                if (this.isEat == false && this.isReproduce == false && this.isMove == false && (chanceToEat < 90)) {
                     Iterator<T> iterator = animal.iterator();
-                    while (iterator.hasNext()){
+                    while (iterator.hasNext()) {
                         iterator.next();
                         iterator.remove();
                         Mouse.deathMouse++;
                         needToEat--;
-                        if(needToEat ==0)break;
+                        if (needToEat == 0) break;
                     }
-                    this.satiety = 1_000;
+                    this.satiety = Properties.SATIETY_EAGLE;
                     this.stepDeath = 0;
                     this.isEat = true;
-                }else{
+                } else {
                     this.isEat = false;
-                    this.satiety -= 350;
-                    if(this.satiety<0)stepDeath++;
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_EAGLE;
+                    if (this.satiety < 0) stepDeath++;
                 }
             } else if (object instanceof Rabbit) {
                 int chanceToEat = ThreadLocalRandom.current().nextInt(100);
                 int needToEat = 1;
                 chanceToEat++;
-                if(this.isEat == false && this.isReproduce == false  && this.isMove == false && (chanceToEat<90)) {
+                if (this.isEat == false && this.isReproduce == false && this.isMove == false && (chanceToEat < 90)) {
                     Iterator<T> iterator = animal.iterator();
-                    while (iterator.hasNext()){
+                    while (iterator.hasNext()) {
                         iterator.next();
                         iterator.remove();
                         Rabbit.deathRabbit++;
                         needToEat--;
-                        if(needToEat ==0)break;
+                        if (needToEat == 0) break;
                     }
-                    this.satiety = 1_000;
+                    this.satiety = Properties.SATIETY_EAGLE;
                     this.stepDeath = 0;
                     this.isEat = true;
-                }else{
+                } else {
                     this.isEat = false;
-                    this.satiety -= 350;
-                    if(this.satiety<0)stepDeath++;
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_EAGLE;
+                    if (this.satiety < 0) stepDeath++;
                 }
             } else if (object instanceof Fox) {
                 int chanceToEat = ThreadLocalRandom.current().nextInt(100);
                 int needToEat = 1;
                 chanceToEat++;
-                if(this.isEat == false && this.isReproduce == false  && this.isMove == false && (chanceToEat<10)) {
+                if (this.isEat == false && this.isReproduce == false && this.isMove == false && (chanceToEat < 10)) {
                     Iterator<T> iterator = animal.iterator();
-                    while (iterator.hasNext()){
+                    while (iterator.hasNext()) {
                         iterator.next();
                         iterator.remove();
                         Rabbit.deathRabbit++;
                         needToEat--;
-                        if(needToEat ==0)break;
+                        if (needToEat == 0) break;
                     }
-                    this.satiety = 1_000;
+                    this.satiety = Properties.SATIETY_EAGLE;
                     this.stepDeath = 0;
                     this.isEat = true;
-                }else{
+                } else {
                     this.isEat = false;
-                    this.satiety -= 350;
-                    if(this.satiety<0)stepDeath++;
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_EAGLE;
+                    if (this.satiety < 0) stepDeath++;
                 }
             }
-        }else{
+        } else {
             this.isEat = false;
             this.satiety -= 350;
-            if(this.satiety<0)stepDeath++;
+            if (this.satiety < 0) stepDeath++;
         }
     }
 
     @Override
     public ArrayList<Eagle> reproduce(Cell[][] cells, int i, int j) {
-        ArrayList<Eagle> newEagle= new ArrayList<>();
+        ArrayList<Eagle> newEagle = new ArrayList<>();
         int randomLengthEagle = ThreadLocalRandom.current().nextInt(2);
-        if(this.isReproduce == false && this.isEat == false && this.isMove == false){
-            for (int k=0;k<randomLengthEagle;k++){
+        if (this.isReproduce == false && this.isEat == false && this.isMove == false) {
+            for (int k = 0; k < randomLengthEagle; k++) {
                 newEagle.add(new Eagle());
                 Eagle.newEagle++;
             }
-            this.isReproduce=true;
-        }else{
+            this.isReproduce = true;
+        } else {
             this.isReproduce = false;
         }
-        this.satiety -= 350;;
-        if(this.satiety<0)stepDeath++;
+        this.satiety -= Properties.SATIETY_STEP_TO_DEATH_EAGLE;
+        ;
+        if (this.satiety < 0) stepDeath++;
         return newEagle;
     }
 
     @Override
-    public Eagle move(Cell[][] cells,int i,int j) {
-        if(this.isEat == false && this.isReproduce == false && this.isMove == false){
+    public Eagle move(Cell[][] cells, int i, int j) {
+        if (this.isEat == false && this.isReproduce == false && this.isMove == false) {
             int randomStepLength = ThreadLocalRandom.current().nextInt(4);
             int randomWay = ThreadLocalRandom.current().nextInt(4);
-            this.isMove=true;
-            if(randomWay == 0){
+            this.isMove = true;
+            if (randomWay == 0) {
                 //west(left)
-                int iStepToLeft = j-randomStepLength;
-                if(iStepToLeft>=0){
-                    this.satiety-=350;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToLeft = j - randomStepLength;
+                if (iStepToLeft >= 0) {
+                    this.satiety -= 350;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Eagle> MoveToOtherEagle = cells[i][iStepToLeft].getEagle();
                     MoveToOtherEagle.add(this);
                     return this;
-                }else{
+                } else {
                     Eagle.deathEagle++;
                     return this;
                 }
-            }else if(randomWay == 1){
+            } else if (randomWay == 1) {
                 //north(up)
-                int iStepToUp = i-randomStepLength;
-                if(iStepToUp>=0){
-                    this.satiety-=350;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToUp = i - randomStepLength;
+                if (iStepToUp >= 0) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_EAGLE;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Eagle> MoveToOtherEagle = cells[iStepToUp][j].getEagle();
                     MoveToOtherEagle.add(this);
                     return this;
-                }else{
+                } else {
                     Eagle.deathEagle++;
                     return this;
                 }
-            }else if(randomWay == 2){
+            } else if (randomWay == 2) {
                 //east(right)
-                int iStepToRight = j+randomStepLength;
-                if(iStepToRight<cells[0].length){
-                    this.satiety-=350;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToRight = j + randomStepLength;
+                if (iStepToRight < cells[0].length) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_EAGLE;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Eagle> MoveToOtherEagle = cells[i][iStepToRight].getEagle();
                     MoveToOtherEagle.add(this);
                     return this;
-                }else{
+                } else {
                     Eagle.deathEagle++;
                     return this;
                 }
-            }else if(randomWay == 3){
+            } else if (randomWay == 3) {
                 //south(down)
-                int iStepToDown = i+randomStepLength;
-                if(iStepToDown<cells.length){
-                    this.satiety-=350;
-                    if(this.satiety<0)stepDeath++;
+                int iStepToDown = i + randomStepLength;
+                if (iStepToDown < cells.length) {
+                    this.satiety -= Properties.SATIETY_STEP_TO_DEATH_EAGLE;
+                    if (this.satiety < 0) stepDeath++;
                     ArrayList<Eagle> MoveToOtherEagle = cells[iStepToDown][j].getEagle();
                     MoveToOtherEagle.add(this);
                     return this;
-                }else{
+                } else {
                     Eagle.deathEagle++;
                     return this;
                 }
             }
-        }else{
+        } else {
             this.isMove = false;
         }
-        return  null;
+        return null;
     }
 
     @Override
